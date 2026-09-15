@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Buff — Hero + Opener recreation</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..500;1,9..144,300..500&family=Inter:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --cream:#f2ece7;
+    --ink:#151515;
+    --blue:#7195ff;
+    --serif:"Fraunces","Feature Deck",Georgia,serif;
+    --sans:"Inter","Helvetica Now Display",Arial,sans-serif;
+    --pad:clamp(1.25rem,4vw,3rem);
+    --opener-total:2.6s; /* moment the black panel has fully cleared */
+  }
+
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{background:var(--ink)}
+  body{
+    font-family:var(--sans);
+    color:var(--ink);
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+
+  /* ============================ HERO ============================ */
+  .hero{
+    position:relative;
+    min-height:100svh;
+    background:var(--cream);
+    overflow:hidden;
+    display:flex;
+    align-items:center;
+  }
+
+  /* giant looping squiggle behind everything */
+  .hero__squiggle{
+    position:absolute;
+    top:46%;
+    right:-22%;
+    width:min(78vw,1040px);
+    height:min(115vh,1180px);
+    transform:translateY(-50%);
+    pointer-events:none;
+    z-index:0;
+    color:#fff;
+    animation:squiggleDrift 24s ease-in-out infinite;
+  }
+  .hero__squiggle path{
+    fill:none;
+    stroke:currentColor;
+    stroke-width:126;
+    stroke-linecap:round;
+    stroke-linejoin:round;
+    stroke-dasharray:7800;
+    stroke-dashoffset:7800;
+    animation:squiggleDraw 2.6s cubic-bezier(.7,0,.2,1) calc(var(--opener-total) - .3s) forwards;
+  }
+  @keyframes squiggleDraw{to{stroke-dashoffset:0}}
+  @keyframes squiggleDrift{
+    0%,100%{transform:translateY(-50%) rotate(0deg) scale(1)}
+    50%{transform:translateY(-53%) rotate(-3deg) scale(1.035)}
+  }
+
+  /* ---- nav ---- */
+  .nav{
+    position:absolute;
+    inset:0 0 auto 0;
+    z-index:3;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:clamp(1rem,2.4vw,1.7rem) var(--pad);
+  }
+  .nav__logo{width:38px;height:44px;display:block;color:var(--ink)}
+  .nav__arrow{width:44px;height:44px;color:var(--ink)}
+  .nav__arrow path{stroke:currentColor;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round}
+
+  .pill{
+    position:absolute;
+    left:50%;
+    top:50%;
+    transform:translate(-50%,-50%);
+    display:inline-flex;
+    align-items:center;
+    gap:.55em;
+    padding:.72em 1.5em;
+    border:1px solid rgba(21,21,21,.28);
+    border-radius:999px;
+    font-size:11px;
+    letter-spacing:.14em;
+    text-transform:uppercase;
+    color:var(--ink);
+    white-space:nowrap;
+    background:transparent;
+    cursor:pointer;
+    transition:background .25s ease,color .25s ease;
+  }
+  .pill:hover{background:var(--ink);color:var(--cream)}
+  .pill svg{width:12px;height:12px}
+  .pill path{stroke:currentColor;stroke-width:1.6;fill:none;stroke-linecap:round;stroke-linejoin:round}
+
+  /* ---- headline ---- */
+  .hero__inner{
+    position:relative;
+    z-index:2;
+    width:100%;
+    max-width:1440px;
+    margin:0 auto;
+    padding:0 var(--pad);
+  }
+  .headline{
+    font-family:var(--serif);
+    font-optical-sizing:auto;
+    font-weight:390;
+    font-size:clamp(2.6rem,8vw,6rem);
+    line-height:1.05;
+    letter-spacing:-.025em;
+    max-width:15ch;
+    color:var(--ink);
+  }
+  .headline em{font-style:italic;font-weight:390}
+
+  /* per-word mask reveal */
+  .word{
+    display:inline-block;
+    overflow:hidden;
+    vertical-align:top;
+  }
+  .headline em .word{padding-right:.05em} /* guard against italic clipping */
+  .word > span{
+    display:inline-block;
+    transform:translateY(115%);
+    animation:wordUp .9s cubic-bezier(.22,1,.36,1) forwards;
+  }
+  @keyframes wordUp{to{transform:translateY(0)}}
+
+  .replay{
+    position:absolute;
+    right:var(--pad);
+    bottom:clamp(1rem,3vw,2rem);
+    z-index:3;
+    display:inline-flex;
+    align-items:center;
+    gap:.5em;
+    border:0;
+    background:none;
+    font-family:var(--sans);
+    font-size:11px;
+    letter-spacing:.14em;
+    text-transform:uppercase;
+    color:rgba(21,21,21,.55);
+    cursor:pointer;
+  }
+  .replay:hover{color:var(--ink)}
+
+  /* ============================ OPENER ============================ */
+  .opener{
+    position:fixed;
+    inset:0;
+    z-index:9000;
+    background:var(--ink);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    transform:translateY(0);
+    animation:openerOut .8s cubic-bezier(.76,0,.24,1) 1.8s forwards;
+  }
+  @keyframes openerOut{to{transform:translateY(-101%)}}
+
+  .opener__row{
+    position:relative;
+    display:flex;
+    gap:.22em;
+    font-family:var(--serif);
+    font-optical-sizing:auto;
+    font-weight:400;
+    font-size:clamp(1.6rem,5vw,3.5rem);
+    letter-spacing:-.02em;
+    color:#fff;
+  }
+  .opener__word{display:inline-block;overflow:hidden;vertical-align:top}
+  .opener__word > span{
+    display:inline-block;
+    transform:translateY(115%);
+    animation:wordUp .7s cubic-bezier(.22,1,.36,1) forwards;
+  }
+  .opener__word:nth-child(1) > span{animation-delay:.25s}
+  .opener__word:nth-child(2) > span{animation-delay:.36s}
+  .opener__word:nth-child(3) > span{animation-delay:.47s}
+
+  /* blue squiggle under "Buff" */
+  .opener__squiggle{
+    position:absolute;
+    left:auto;
+    right:-.06em;
+    bottom:-.1em;
+    width:1.95em;
+    height:.6em;
+    overflow:visible;
+  }
+  .opener__squiggle path{
+    fill:none;
+    stroke:var(--blue);
+    stroke-width:12;
+    stroke-linecap:round;
+    stroke-linejoin:round;
+    stroke-dasharray:520;
+    stroke-dashoffset:520;
+    animation:squiggleDraw .8s cubic-bezier(.65,0,.35,1) .95s forwards;
+  }
+
+  .opener.done{display:none}
+
+  /* first paint: keep hero words down until their animation fires */
+  .headline .word > span{animation-play-state:paused}
+  body.go .headline .word > span{animation-play-state:running}
+  .headline .word:nth-child(1) > span{animation-delay:calc(var(--opener-total) - .35s)}
+  .headline .word:nth-child(2) > span{animation-delay:calc(var(--opener-total) - .29s)}
+  .headline .word:nth-child(3) > span{animation-delay:calc(var(--opener-total) - .23s)}
+  .headline .word:nth-child(4) > span{animation-delay:calc(var(--opener-total) - .17s)}
+  .headline .word:nth-child(5) > span{animation-delay:calc(var(--opener-total) - .11s)}
+  .headline .word:nth-child(6) > span{animation-delay:calc(var(--opener-total) - .05s)}
+  .headline .word:nth-child(7) > span{animation-delay:calc(var(--opener-total) + .01s)}
+  .headline .word:nth-child(8) > span{animation-delay:calc(var(--opener-total) + .07s)}
+  .headline .word:nth-child(9) > span{animation-delay:calc(var(--opener-total) + .13s)}
+
+  @media (prefers-reduced-motion:reduce){
+    .opener{animation:none;transform:translateY(-101%)}
+    .opener__squiggle path,.hero__squiggle path{animation:none;stroke-dashoffset:0}
+    .word > span,.opener__word > span{animation:none;transform:none}
+    .hero__squiggle{animation:none}
+  }
+</style>
+</head>
+<body>
+
+  <!-- ================= OPENER ================= -->
+  <div class="opener" id="opener" aria-hidden="true">
+    <div class="opener__row">
+      <span class="opener__word"><span>Hey,</span></span>
+      <span class="opener__word"><span>we're</span></span>
+      <span class="opener__word"><span>Buff</span>
+        <svg class="opener__squiggle" viewBox="0 0 220 70" aria-hidden="true">
+          <path d="M8 40 C 40 8, 96 6, 120 34 C 134 50, 120 66, 104 58 C 92 52, 100 34, 126 30 C 168 23, 196 34, 214 20" />
+        </svg>
+      </span>
+    </div>
+  </div>
+
+  <!-- ================= HERO ================= -->
+  <header class="hero">
+    <svg class="hero__squiggle" viewBox="0 0 1200 1300" aria-hidden="true">
+      <path d="M 150 1160
+               C 40 760, 320 120, 640 240
+               C 960 360, 970 820, 660 860
+               C 410 895, 360 550, 660 520
+               C 1040 480, 1200 900, 1120 1320" />
+    </svg>
+
+    <nav class="nav">
+      <svg class="nav__logo" viewBox="0 0 40 46" aria-label="Buff">
+        <path fill="currentColor" d="M9 2c1.7 0 3 1.4 3 3.1v13.3c2.1-2.6 5.2-4.2 8.9-4.2 7 0 12.1 5.6 12.1 13s-5.4 13-12.6 13c-3.6 0-6.6-1.5-8.7-4.1l-.5 2.2c-.3 1.2-1.3 2-2.6 2H6c-1.7 0-3-1.4-3-3.1V5.1C3 3.4 4.3 2 6 2h3Zm10.6 18.6c-4 0-6.9 3-6.9 7.1s2.9 7.1 6.9 7.1 6.8-3 6.8-7.1-2.8-7.1-6.8-7.1Z"/>
+      </svg>
+
+      <button class="pill" type="button">
+        Check out our latest work with Starling
+        <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M6 4v6a3 3 0 0 0 3 3h7M13 10l4 3-4 3"/></svg>
+      </button>
+
+      <svg class="nav__arrow" viewBox="0 0 40 40" aria-hidden="true">
+        <path d="M6 20h26M22 10l10 10-10 10"/>
+      </svg>
+    </nav>
+
+    <div class="hero__inner">
+      <h1 class="headline" aria-label="We're a motion-first creative studio for brands and agencies">
+        <span class="word"><span>We're</span></span>
+        <span class="word"><span>a</span></span>
+        <em><span class="word"><span>motion-</span></span><span class="word"><span>first</span></span>
+        <span class="word"><span>creative</span></span>
+        <span class="word"><span>studio</span></span></em>
+        <span class="word"><span>for</span></span>
+        <span class="word"><span>brands</span></span>
+        <span class="word"><span>and</span></span>
+        <span class="word"><span>agencies</span></span>
+      </h1>
+    </div>
+
+    <button class="replay" type="button" id="replay">&#8635;&nbsp;&nbsp;Replay intro</button>
+  </header>
+
+<script>
+  (function () {
+    var opener = document.getElementById('opener');
+    var body = document.body;
+    var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    function run() {
+      body.classList.remove('go');
+      opener.classList.remove('done');
+      // force reflow so re-adding animations restarts them
+      void opener.offsetWidth;
+      // restart word + squiggle animations by cloning nodes
+      document.querySelectorAll('.opener__word > span, .opener__squiggle path, .headline .word > span, .hero__squiggle path')
+        .forEach(function (el) {
+          el.style.animation = 'none';
+          void el.offsetWidth;
+          el.style.animation = '';
+        });
+      requestAnimationFrame(function () { body.classList.add('go'); });
+      if (!reduce) {
+        setTimeout(function () { opener.classList.add('done'); }, 2700);
+      } else {
+        opener.classList.add('done');
+      }
+    }
+
+    run();
+    document.getElementById('replay').addEventListener('click', run);
+  })();
+</script>
+</body>
+</html>

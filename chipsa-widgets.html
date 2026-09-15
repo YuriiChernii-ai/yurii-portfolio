@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Chipsa — floating widgets recreation</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800;900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --bg:#f1f1f0;
+    --ink:#111;
+    --green:#6eff29;
+    --yellow:#eeff01;
+    --sans:"Inter",system-ui,sans-serif;
+    --display:"Archivo",system-ui,sans-serif;
+    --ease:cubic-bezier(.16,1,.3,1);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    font-family:var(--sans);
+    color:var(--ink);
+    background:var(--bg);
+    min-height:100vh;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+
+  /* ---------- light page backdrop (context only) ---------- */
+  .stage{position:relative;min-height:100vh;padding:clamp(1.25rem,4vw,2.5rem)}
+  .stage__top{display:flex;justify-content:space-between;gap:2rem;align-items:flex-start}
+  .logo{width:52px;height:34px;flex:none}
+  .logo path{fill:#e7b84b}
+  .stage__nav{display:flex;gap:clamp(1rem,3vw,2.75rem);font-size:12px;font-weight:600;letter-spacing:.02em}
+  .stage__nav span{opacity:.75;cursor:pointer}
+  .stage__nav span:hover{opacity:1}
+  .stage h1{
+    margin-top:clamp(1.5rem,5vh,3rem);
+    max-width:20ch;
+    font-family:var(--display);
+    font-weight:800;
+    font-size:clamp(1.35rem,3.4vw,2rem);
+    line-height:1.08;
+    letter-spacing:-.02em;
+    text-transform:uppercase;
+  }
+  .stage__sub{margin-top:.9rem;font-size:clamp(.9rem,1.4vw,1.05rem);font-weight:500;color:#555;max-width:26ch}
+  .stage__hint{
+    position:absolute;left:50%;bottom:2.2rem;transform:translateX(-50%);
+    font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#9a9a9a;text-align:center;
+  }
+
+  /* ================= 1. MENU FAB + PANEL ================= */
+  .menu-fab{
+    position:fixed;left:22px;top:50%;transform:translateY(-50%);
+    z-index:60;
+    display:inline-flex;align-items:center;gap:8px;
+    padding:11px 15px;
+    border:.8px solid transparent;border-radius:6px;
+    background:rgba(140,140,140,.22);
+    -webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);
+    color:var(--ink);
+    font:600 14px/1 var(--sans);letter-spacing:-.01em;text-transform:uppercase;
+    cursor:pointer;
+    transition:background .25s ease;
+  }
+  .menu-fab:hover{background:rgba(140,140,140,.34)}
+  .menu-fab svg{width:18px;height:16px;flex:none}
+  .menu-fab .i-open{display:none}
+  .menu-fab .i-close{display:block;opacity:.42}
+  html.menu-open .menu-fab{color:#fff}
+  html.menu-open .menu-fab .i-open{display:block;opacity:.6}
+  html.menu-open .menu-fab .i-close{display:none}
+
+  .menu-overlay{
+    position:fixed;inset:0;z-index:50;
+    background:rgba(0,0,0,.45);
+    opacity:0;pointer-events:none;
+    transition:opacity .5s var(--ease);
+  }
+  html.menu-open .menu-overlay{opacity:1;pointer-events:auto}
+
+  .menu-panel{
+    position:fixed;left:0;top:0;height:100vh;height:100svh;
+    width:min(460px,88vw);
+    z-index:55;
+    background:#000;color:#fff;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    text-align:center;
+    padding:64px 24px;
+    transform:translateX(-100%);
+    transition:transform .6s var(--ease);
+    overflow-y:auto;
+  }
+  html.menu-open .menu-panel{transform:translateX(0)}
+
+  .menu-nav{display:flex;flex-direction:column;gap:2px}
+  .menu-nav a{
+    font-family:var(--display);font-weight:800;text-transform:uppercase;
+    font-size:clamp(20px,3.2vw,30px);line-height:1.4;letter-spacing:-.02em;
+    color:#fff;text-decoration:none;
+    transition:opacity .2s ease;
+  }
+  .menu-nav a:hover{opacity:.45}
+  .menu-nav__label{
+    margin:26px 0 6px;
+    font:600 11px/1 var(--sans);letter-spacing:.22em;text-transform:uppercase;opacity:.4;
+  }
+  .menu-panel__foot{
+    position:absolute;left:0;right:0;bottom:26px;
+    font:600 11px/1 var(--sans);letter-spacing:.06em;text-transform:uppercase;opacity:.4;
+  }
+
+  /* ================= 2. CHAT FAB + CARD ================= */
+  .chat-fab{
+    position:fixed;right:22px;bottom:24px;z-index:60;
+    width:56px;height:56px;
+    border:0;background:none;cursor:pointer;
+    display:grid;place-items:center;
+  }
+  .chat-fab svg{width:38px;height:38px;transform:rotate(-8deg);animation:bob 3.4s ease-in-out infinite;filter:drop-shadow(0 6px 12px rgba(0,0,0,.18))}
+  .chat-fab:hover svg{animation-play-state:paused;transform:rotate(-8deg) scale(1.08)}
+  @keyframes bob{0%,100%{translate:0 0;rotate:-8deg}50%{translate:0 -5px;rotate:-3deg}}
+
+  .chat-card{
+    position:fixed;right:22px;bottom:24px;z-index:61;
+    width:min(402px,92vw);
+    height:min(660px,82vh);
+    display:flex;flex-direction:column;gap:18px;
+    padding:20px;
+    background:#fff;
+    border:.8px solid #f0f0f0;
+    border-radius:24px;
+    box-shadow:0 24px 70px -20px rgba(0,0,0,.22);
+    transform-origin:100% 100%;
+    transform:translateY(14px) scale(.92);
+    opacity:0;pointer-events:none;
+    transition:transform .5s var(--ease),opacity .35s ease;
+  }
+  html.chat-open .chat-card{transform:none;opacity:1;pointer-events:auto}
+  html.chat-open .chat-fab{opacity:0;pointer-events:none;transition:opacity .2s}
+
+  .chat-close{
+    align-self:flex-end;
+    width:40px;height:40px;flex:none;
+    display:grid;place-items:center;
+    border:.8px solid #fff;border-radius:999px;
+    background:#ececec;color:#000;cursor:pointer;
+    transition:background .2s ease;
+  }
+  .chat-close:hover{background:#e0e0e0}
+  .chat-close svg{width:18px;height:18px}
+
+  .chat-intro{display:flex;align-items:center;gap:12px;margin-top:-8px}
+  .chat-intro__avatar{
+    width:46px;height:46px;flex:none;border-radius:50%;
+    background:radial-gradient(120% 120% at 30% 20%,#c8d7ff,#8aa0e6 60%,#5f6fbf);
+    display:grid;place-items:center;
+    font-weight:700;font-size:15px;color:#1a2352;
+  }
+  .chat-intro__text{font-size:16px;font-weight:500;letter-spacing:-.01em}
+
+  .chat-services{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .chat-service{
+    background:var(--green);
+    border-radius:6px;
+    padding:16px;
+    min-height:168px;
+    display:flex;flex-direction:column;justify-content:space-between;
+    border:0;text-align:left;cursor:pointer;color:#000;
+    transition:filter .2s ease,transform .2s ease;
+  }
+  .chat-service:hover{filter:brightness(.96);transform:translateY(-2px)}
+  .chat-service__icon{width:60px;height:46px}
+  .chat-service__title{
+    font-family:var(--display);font-weight:800;text-transform:uppercase;
+    font-size:21px;line-height:1.04;letter-spacing:-.01em;
+  }
+
+  .chat-notif__top{display:flex;align-items:center;gap:10px}
+  .chat-notif__title{font-size:16px;font-weight:500}
+  .chat-notif__count{
+    min-width:34px;height:34px;padding:0 8px;
+    display:grid;place-items:center;
+    background:var(--yellow);border-radius:50%;
+    font-size:12px;font-weight:600;
+  }
+
+  .chat-news{
+    margin-top:2px;
+    flex:1;min-height:0;overflow-y:auto;
+    -webkit-mask-image:linear-gradient(#000 88%,transparent);
+            mask-image:linear-gradient(#000 88%,transparent);
+  }
+  .chat-news__item{
+    display:flex;flex-direction:column;gap:6px;
+    padding:14px 0;
+    border-top:1px solid #ededed;
+  }
+  .chat-news__item:first-child{border-top:0}
+  .chat-news__date{font-size:12px;color:#aaa}
+  .chat-news__headline{font-size:14px;font-weight:500;line-height:1.32;letter-spacing:-.01em}
+  .chat-news__item:hover .chat-news__headline{text-decoration:underline}
+
+  @media (max-width:520px){
+    .chat-card,.chat-fab{right:14px}
+    .chat-fab{bottom:16px}
+    .chat-card{bottom:16px;height:min(660px,80vh)}
+  }
+
+  @media (prefers-reduced-motion:reduce){
+    *{transition-duration:.001s!important;animation:none!important}
+  }
+</style>
+</head>
+<body>
+
+  <main class="stage">
+    <div class="stage__top">
+      <svg class="logo" viewBox="0 0 52 34" aria-label="logo">
+        <path d="M15 3c6 0 10 5 11 10 1-5 5-10 11-10 8 0 14 6 14 14s-6 14-14 14c-6 0-10-5-11-10-1 5-5 10-11 10C7 45 1 39 1 31S7 3 15 3Z" transform="translate(0,-3)"/>
+      </svg>
+      <nav class="stage__nav">
+        <span>Cases</span><span>About studio</span><span>Services</span><span>Contacts</span>
+      </nav>
+    </div>
+
+    <h1>We evoke emotions through aesthetics, WebGL and 3D</h1>
+    <p class="stage__sub">Websites, digital spaces, AI and CGI graphics</p>
+
+    <p class="stage__hint">recreation of the two floating widgets — click them</p>
+  </main>
+
+  <!-- ============ MENU ============ -->
+  <button class="menu-fab" id="menuBtn" aria-expanded="false" aria-controls="menuPanel">
+    <svg class="i-close" viewBox="0 0 18 16" fill="currentColor" aria-hidden="true">
+      <path d="M0 1.863 1.06.803l5.752 5.75-1.06 1.06zM18 1.863 16.94.802l-5.752 5.75 1.061 1.062zM18 14.884l-1.06 1.06-5.752-5.75 1.061-1.061zM0 14.884l1.06 1.06 5.752-5.75L5.75 9.133z"/>
+    </svg>
+    <svg class="i-open" viewBox="0 0 20 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M4 3l6 5-6 5M11 3l6 5-6 5"/>
+    </svg>
+    <span>Menu</span>
+  </button>
+
+  <div class="menu-overlay" id="menuOverlay"></div>
+
+  <aside class="menu-panel" id="menuPanel" aria-hidden="true">
+    <nav class="menu-nav">
+      <a href="#">Main</a>
+      <a href="#">Cases</a>
+      <a href="#">About studio</a>
+      <a href="#">Publications</a>
+      <span class="menu-nav__label">( Services )</span>
+      <a href="#">Sites</a>
+      <a href="#">Interfaces</a>
+      <a href="#">Visuals</a>
+      <a href="#">Spark</a>
+      <span class="menu-nav__label">&nbsp;</span>
+      <a href="#">Career</a>
+      <a href="#">Contacts</a>
+    </nav>
+    <div class="menu-panel__foot">Personal data processing policy</div>
+  </aside>
+
+  <!-- ============ CHAT ============ -->
+  <button class="chat-fab" id="chatBtn" aria-expanded="false" aria-controls="chatCard" aria-label="Open chat">
+    <svg viewBox="0 0 48 48" aria-hidden="true">
+      <path d="M11 3h18l10 10v30a3 3 0 0 1-3 3H11a3 3 0 0 1-3-3V6a3 3 0 0 1 3-3Z" fill="#f4f1ea" stroke="#111" stroke-width="1.6" stroke-linejoin="round"/>
+      <path d="M29 3v8a3 3 0 0 0 3 3h7" fill="#d9d4c7" stroke="#111" stroke-width="1.6" stroke-linejoin="round"/>
+      <path d="M15 24h14M15 30h18M15 36h10" stroke="#111" stroke-width="1.6" stroke-linecap="round" opacity=".55"/>
+    </svg>
+  </button>
+
+  <section class="chat-card" id="chatCard" aria-hidden="true">
+    <button class="chat-close" id="chatClose" aria-label="Close chat">
+      <svg viewBox="0 0 20 21" fill="#000" aria-hidden="true">
+        <path d="m4.42 15.169 9.899-9.9 1.06 1.061-9.9 9.9z"/>
+        <path d="m14.32 16.231-9.9-9.9 1.06-1.06 9.9 9.9z"/>
+      </svg>
+    </button>
+
+    <div class="chat-intro">
+      <div class="chat-intro__avatar">EI</div>
+      <div class="chat-intro__text">Hi there, wanna talk?</div>
+    </div>
+
+    <div class="chat-services">
+      <button class="chat-service">
+        <svg class="chat-service__icon" viewBox="0 0 80 60" aria-hidden="true">
+          <defs><linearGradient id="env" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#fff" stop-opacity=".35"/><stop offset="1" stop-color="#fff" stop-opacity="0"/>
+          </linearGradient></defs>
+          <rect x="4" y="7" width="72" height="46" rx="6" fill="#2b2b2b"/>
+          <path d="M6 11 40 37 74 11" fill="none" stroke="#565656" stroke-width="3"/>
+          <path d="M6 50 31 30M74 50 49 30" fill="none" stroke="#3c3c3c" stroke-width="3"/>
+          <rect x="4" y="7" width="72" height="46" rx="6" fill="url(#env)"/>
+        </svg>
+        <span class="chat-service__title">Discuss new project</span>
+      </button>
+      <button class="chat-service">
+        <svg class="chat-service__icon" viewBox="0 0 80 60" aria-hidden="true">
+          <rect x="4" y="7" width="72" height="46" rx="6" fill="#2b2b2b"/>
+          <path d="M6 11 40 37 74 11" fill="none" stroke="#565656" stroke-width="3"/>
+          <path d="M6 50 31 30M74 50 49 30" fill="none" stroke="#3c3c3c" stroke-width="3"/>
+          <rect x="4" y="7" width="72" height="46" rx="6" fill="url(#env)"/>
+        </svg>
+        <span class="chat-service__title">Join our team</span>
+      </button>
+    </div>
+
+    <div class="chat-notif__top">
+      <span class="chat-notif__title">Notifications</span>
+      <span class="chat-notif__count">+3</span>
+    </div>
+
+    <div class="chat-news">
+      <article class="chat-news__item">
+        <span class="chat-news__date">10.12.2025</span>
+        <span class="chat-news__headline">Modern Industrial Websites: How 3D and Interactivity Help Sell Complex Technology</span>
+      </article>
+      <article class="chat-news__item">
+        <span class="chat-news__date">04.12.2025</span>
+        <span class="chat-news__headline">Biotech Website Development: Key Principles and Real Case Studies</span>
+      </article>
+      <article class="chat-news__item">
+        <span class="chat-news__date">26.11.2025</span>
+        <span class="chat-news__headline">3D Visualization for Vileda: When Even a Cleaning Cloth Matters</span>
+      </article>
+    </div>
+  </section>
+
+<script>
+  var root = document.documentElement;
+
+  function setMenu(open){
+    root.classList.toggle('menu-open', open);
+    menuBtn.setAttribute('aria-expanded', open);
+    menuPanel.setAttribute('aria-hidden', !open);
+  }
+  function setChat(open){
+    root.classList.toggle('chat-open', open);
+    chatBtn.setAttribute('aria-expanded', open);
+    chatCard.setAttribute('aria-hidden', !open);
+  }
+
+  menuBtn.addEventListener('click', function(){ setMenu(!root.classList.contains('menu-open')); });
+  menuOverlay.addEventListener('click', function(){ setMenu(false); });
+
+  chatBtn.addEventListener('click', function(){ setChat(true); });
+  chatClose.addEventListener('click', function(){ setChat(false); });
+
+  document.addEventListener('keydown', function(e){
+    if(e.key === 'Escape'){ setMenu(false); setChat(false); }
+  });
+</script>
+</body>
+</html>

@@ -349,11 +349,15 @@
        pass gets the same treatment so --panel-h is read at the width the
        panel is actually rendered at. */
     html.onav-open .onav,
-    .onav.is-measuring{padding-left:0;padding-right:0}
+    .onav.is-measuring{padding:0}
     html.onav-open .onav__bar,
     .onav.is-measuring .onav__bar{
       width:100%;
-      border-radius:0;border-left:0;border-right:0;
+      border-radius:0;border-left:0;border-right:0;border-top:0;
+      /* the wrapper's top gutter would otherwise leave a strip of the page
+         showing above a menu that is meant to own the whole screen; the bar
+         takes that space back inside itself so the row stays put */
+      padding-top:17px;
     }
     /* 16px wrapper gutter + the 1px side border that goes with it */
     html.onav-open .onav__row,
@@ -365,6 +369,15 @@
   @media (max-width:520px){
     .onav__menu .onav__btn-roll{display:none}
     .onav__btn.is-login{display:none}
+    /* the 8px/2px split was there to sit the icon next to the "Menu"
+       label; with the label gone it just parks the icon off-centre */
+    .onav__menu{padding:0;justify-content:center;width:36px}
+  }
+
+  /* the wordmark is pinned to the same top-left corner the header bar
+     occupies, so on a phone the two always sit on top of each other */
+  @media (max-width:720px){
+    .brand{display:none}
   }
 
 
@@ -643,7 +656,9 @@
   .lx-cursor__label b{font-weight:600;color:var(--blue)}
 
   @media (max-width:720px){
-    .lx-hero__name{bottom:5svh}
+    /* 66vw leaves the wordmark floating small in the middle of a phone
+       screen; it is the name on the page, so let it use the width */
+    .lx-hero__name{bottom:5svh;width:min(760px,86vw)}
     .lx-cursor__label{font-size:11px}
   }
   @media (prefers-reduced-motion:reduce){

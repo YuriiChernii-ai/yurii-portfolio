@@ -951,14 +951,20 @@
     background:var(--ink);
     display:flex;align-items:center;justify-content:center;
   }
-  /* centers the whole "Hey, [gif] I'm Yurii." group as one unit. A grid
-     with two equal 1fr flanks pins the gif to the exact screen centre
-     instead, which reads as centered only when both words happen to be
-     close in width -- on EN "I'm Yurii." is roughly twice as wide as "Hey,"
-     so the whole line sat visibly right of centre. */
+  /* the runner gif must sit dead-centre on the screen -- the two words
+     flanking it are allowed to read as unequal margins, that's the
+     intended look. Grid does that with two equal 1fr side columns, but
+     bare `1fr` gives each column an automatic minimum equal to its own
+     content: the first word (a plain .opener__word, overflow:hidden) can
+     shrink past that, while the second word's wrapper (.opener__col,
+     overflow:visible) can't, so on a narrow screen the two columns stopped
+     matching and the gif drifted off-centre. `minmax(0,1fr)` forces both
+     sides to the same shrink behaviour regardless of that wrapper. */
   .opener__row{
     position:relative;
-    display:flex;align-items:center;justify-content:center;
+    display:grid;
+    grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);
+    align-items:center;
     column-gap:16px;
     width:100%;
     font-family:var(--serif);font-optical-sizing:auto;font-weight:400;
@@ -966,8 +972,9 @@
   }
   .opener__word{display:inline-block;overflow:hidden;vertical-align:top}
   .opener__word > span{display:inline-block}
-  .opener__col{position:relative;display:inline-block}
-  .opener__gifwrap{display:inline-flex;align-items:center;flex:none}
+  .opener__row > .opener__word:first-of-type{justify-self:end;min-width:0}
+  .opener__col{position:relative;display:inline-block;justify-self:start;min-width:0;overflow:hidden}
+  .opener__gifwrap{display:inline-flex;align-items:center;flex:none;justify-self:center}
   .opener__gif{display:block;height:clamp(3em,26vh,5em);width:auto;object-fit:contain}
   html.gsap-failed .opener{display:none}
   html.gsap-failed .opener__word > span{transform:none!important}

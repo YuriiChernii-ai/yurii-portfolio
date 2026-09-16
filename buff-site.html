@@ -131,6 +131,15 @@
     object-fit:cover;display:block;
     transform:translateZ(0);backface-visibility:hidden;
   }
+  /* the reel's scale-in runs once, right after the preloader; keeping a
+     full-bleed layer promoted for the whole session costs more on a phone
+     than the one animation it was meant to smooth, so drop the hint there
+     (the case-tile zoom is hover-only and never fires on touch either). */
+  @media (hover: none) and (pointer: coarse){
+    .hero2__reel,
+    .case__media img,
+    .case__media video{will-change:auto}
+  }
 
   /* ---- AI-stack badge, right under the reel ----
      three parts in one row: text | icon stack | text. Icons sit stacked
@@ -1506,8 +1515,12 @@
 
     /* ---------- smooth scroll (Lenis) — wired into the GSAP ticker so
        every existing ScrollTrigger (snake draw, parallax, word-pop) keeps
-       working unchanged; Lenis just eases the scroll position they read. */
-    if (window.Lenis && window.gsap && !reduce) {
+       working unchanged; Lenis just eases the scroll position they read.
+       Touch devices opt out: phones already scroll natively with hardware
+       momentum, and driving that same scroll from rAF on top of it is what
+       made the hero-reel -> cases stretch stutter. */
+    var touchScroll = matchMedia('(hover: none) and (pointer: coarse)').matches;
+    if (window.Lenis && window.gsap && !reduce && !touchScroll) {
       /* autoRaf:false — Lenis otherwise runs its own rAF loop AND the one
          below via gsap.ticker, driving lenis.raf() twice per frame. That
          double-drive was the actual cause of the jitter across the page. */
@@ -2130,17 +2143,31 @@
       t.addEventListener('click', function () { select(t.dataset.group); });
     });
 
-    /* ---- pause case videos while off-screen (perf) ----
+    /* ---- pause every off-screen video (perf) ----
        a clipped, playing <video> being scrolled through the compositor is
-       the main source of scroll jank here — same fix as the hero reel. */
-    var caseVideos = wrap.querySelectorAll('.case__media video');
+       the main source of scroll jank here. This covers the case tiles AND
+       the hero reel; the one inside the nav panel is handled separately
+       below, since it is display-hidden rather than merely scrolled past
+       and so never reports as "off screen" to the observer. */
+    var perfVideos = document.querySelectorAll('.case__media video, .hero2__reel video');
     if ('IntersectionObserver' in window) {
       var caseVidIO = new IntersectionObserver(function (ents) {
         ents.forEach(function (ent) {
           ent.isIntersecting ? ent.target.play().catch(function () {}) : ent.target.pause();
         });
       }, { rootMargin: '150px' });
-      caseVideos.forEach(function (v) { caseVidIO.observe(v); });
+      perfVideos.forEach(function (v) { caseVidIO.observe(v); });
+    }
+
+    /* ---- nav panel reel: only decode frames while the menu is open ---- */
+    var navVideo = document.querySelector('.onav__card-thumb video');
+    if (navVideo) {
+      navVideo.pause();
+      new MutationObserver(function () {
+        document.documentElement.classList.contains('onav-open')
+          ? navVideo.play().catch(function () {})
+          : navVideo.pause();
+      }).observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
     }
 
     /* ---- case media: orange pill follows the cursor instead of the

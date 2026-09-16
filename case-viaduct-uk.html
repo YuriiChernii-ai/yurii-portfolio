@@ -1602,10 +1602,17 @@
       rzT = setTimeout(measurePanel, 200);
     });
 
+    /* the panel's reel keeps decoding frames behind a closed menu, which
+       costs a slice of every frame budget for something nobody can see —
+       so it only runs while the menu is actually open. */
+    var navVideo = document.querySelector('.onav__card-thumb video');
+    if (navVideo) navVideo.pause();
+
     function setONav(open) {
       root.classList.toggle('onav-open', open);
       onavToggle.setAttribute('aria-expanded', open);
       onavPanel.setAttribute('aria-hidden', !open);
+      if (navVideo) open ? navVideo.play().catch(function () {}) : navVideo.pause();
     }
     onavToggle.addEventListener('click', function () { setONav(!root.classList.contains('onav-open')); });
     onavScrim.addEventListener('click', function () { setONav(false); });

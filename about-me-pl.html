@@ -340,13 +340,13 @@
 
   @media (max-width:760px){
     .onav__panel{grid-template-columns:1fr;gap:16px;padding:18px 16px 20px}
-    .onav__card{order:-1}
+    .onav__card{order:1}
     .onav__logo svg{height:22px}
     .onav__clip{overflow-y:auto}
   }
 
   @media (max-width:520px){
-    .onav__menu span{display:none}
+    .onav__menu .onav__btn-roll{display:none}
     .onav__btn.is-login{display:none}
   }
 
@@ -805,6 +805,10 @@
     transform:translate(var(--px,0px),var(--py,0px)) rotate(30deg);
     transform-origin:bottom right;
   }
+  @media (max-width:900px){
+    .free__fig{width:clamp(130px,36vw,190px);left:-16px}
+    .free__fig--r{right:-16px;left:auto;bottom:24px}
+  }
   .free__deck{
     position:relative;z-index:2;display:flex;justify-content:center;align-items:center;
     margin-bottom:26px;padding-left:30px;min-height:126px;
@@ -914,11 +918,13 @@
 
 
   @media (max-width:900px){
+    .samen{min-height:auto;padding:64px 0 48px}
+    .jrn{padding-top:48px}
     .jrn__row{grid-template-columns:1fr;gap:6px}
     .jrn__year{text-align:left}
     .jrn__row--rec{grid-template-columns:1fr}
     .jrn__more{justify-self:start}
-    .think__inner{grid-template-columns:1fr}
+    .think__inner{grid-template-columns:1fr;row-gap:36px}
     .think__grid{grid-template-columns:1fr}
     .think__art:nth-last-child(-n+2){border-bottom:1px solid rgba(21,21,21,.1);padding-bottom:12px}
     .think__art:last-child{border-bottom:0;padding-bottom:0}
@@ -989,16 +995,16 @@
         <div class="onav__col">
           <div class="onav__col-label">Projekty</div>
           <ul>
-            <li><a href="case-viaduct.html"><span class="onav__col-roll"><span>Monte</span><span aria-hidden="true">Monte</span></span></a></li>
+            <li><a href="case-viaduct-pl.html"><span class="onav__col-roll"><span>Monte</span><span aria-hidden="true">Monte</span></span></a></li>
             <li><a href="buff-site-pl.html#cases"><span class="onav__col-roll"><span>Blocks</span><span aria-hidden="true">Blocks</span></span></a></li>
             <li><span class="onav__col-locked">BitBro <span class="onav__pill-tag onav__pill-tag--muted">NDA</span></span></li>
             <li><span class="onav__col-locked">Projekt 04 <span class="onav__pill-tag onav__pill-tag--muted">Wkrótce</span></span></li>
           </ul>
           <div class="onav__socials">
-            <a href="#" aria-label="LinkedIn"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M6.94 5A1.94 1.94 0 1 1 3.06 5a1.94 1.94 0 0 1 3.88 0ZM3.3 8.5h3.3V21H3.3V8.5Zm5.2 0h3.16v1.7h.05c.44-.83 1.5-1.7 3.1-1.7 3.32 0 3.93 2.18 3.93 5v6.5h-3.3v-5.76c0-1.37-.02-3.14-1.92-3.14-1.92 0-2.21 1.5-2.21 3.04V21H8.5V8.5Z"/></svg></a>
-            <a href="#" aria-label="Dribbble"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M4 9.5c3 1 12 1 16.4-1M3.3 15c5-1.6 12-1 17-3.6M9 3c3 4 5 9.5 5.3 18"/></svg></a>
-            <a href="#" aria-label="Behance"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M4 5h5.4c1.9 0 3.3 1 3.3 2.8 0 1.1-.6 1.9-1.6 2.3 1.3.4 2.1 1.3 2.1 2.8 0 2.1-1.6 3.1-3.8 3.1H4V5Zm5 4.4c1 0 1.6-.4 1.6-1.3 0-.9-.6-1.3-1.6-1.3H6.6v2.6H9Zm.2 5.2c1.1 0 1.8-.5 1.8-1.5s-.7-1.5-1.8-1.5H6.6v3h2.6ZM14.5 8h5v1.3h-5V8ZM20 13.7c0 .2 0 .5 0 .7h-5.6c.1 1.3 1 2.1 2.2 2.1.9 0 1.6-.4 1.9-1.1h1.9c-.5 1.7-2 2.7-3.9 2.7-2.4 0-4.1-1.7-4.1-4.2 0-2.4 1.7-4.2 4.1-4.2 2.4 0 3.9 1.8 3.9 4Zm-5.5-1h3.5c-.1-1-.8-1.6-1.7-1.6-.9 0-1.6.6-1.8 1.6Z"/></svg></a>
-            <a href="#" aria-label="Telegram"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M21.5 3.5 2.7 10.8c-1 .4-1 1.8.1 2.1l4.4 1.4 1.7 5.3c.2.7 1.1.9 1.6.3l2.4-2.7 4.6 3.4c.7.5 1.7.1 1.9-.7l3.4-15.6c.2-.9-.7-1.6-1.5-1.2ZM8.9 14.6l9.3-7.8-7.5 8.6-.2 2.9-1.6-3.7Z"/></svg></a>
+            <a href="https://www.linkedin.com/in/yurii-chernii-40b97939a/" target="_blank" rel="noopener" aria-label="LinkedIn"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M6.94 5A1.94 1.94 0 1 1 3.06 5a1.94 1.94 0 0 1 3.88 0ZM3.3 8.5h3.3V21H3.3V8.5Zm5.2 0h3.16v1.7h.05c.44-.83 1.5-1.7 3.1-1.7 3.32 0 3.93 2.18 3.93 5v6.5h-3.3v-5.76c0-1.37-.02-3.14-1.92-3.14-1.92 0-2.21 1.5-2.21 3.04V21H8.5V8.5Z"/></svg></a>
+            <a href="https://dribbble.com/M1lano" target="_blank" rel="noopener" aria-label="Dribbble"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M4 9.5c3 1 12 1 16.4-1M3.3 15c5-1.6 12-1 17-3.6M9 3c3 4 5 9.5 5.3 18"/></svg></a>
+            <a href="https://www.behance.net/YuriiChern11" target="_blank" rel="noopener" aria-label="Behance"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M4 5h5.4c1.9 0 3.3 1 3.3 2.8 0 1.1-.6 1.9-1.6 2.3 1.3.4 2.1 1.3 2.1 2.8 0 2.1-1.6 3.1-3.8 3.1H4V5Zm5 4.4c1 0 1.6-.4 1.6-1.3 0-.9-.6-1.3-1.6-1.3H6.6v2.6H9Zm.2 5.2c1.1 0 1.8-.5 1.8-1.5s-.7-1.5-1.8-1.5H6.6v3h2.6ZM14.5 8h5v1.3h-5V8ZM20 13.7c0 .2 0 .5 0 .7h-5.6c.1 1.3 1 2.1 2.2 2.1.9 0 1.6-.4 1.9-1.1h1.9c-.5 1.7-2 2.7-3.9 2.7-2.4 0-4.1-1.7-4.1-4.2 0-2.4 1.7-4.2 4.1-4.2 2.4 0 3.9 1.8 3.9 4Zm-5.5-1h3.5c-.1-1-.8-1.6-1.7-1.6-.9 0-1.6.6-1.8 1.6Z"/></svg></a>
+            <a href="https://t.me/m1lan081" target="_blank" rel="noopener" aria-label="Telegram"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M21.5 3.5 2.7 10.8c-1 .4-1 1.8.1 2.1l4.4 1.4 1.7 5.3c.2.7 1.1.9 1.6.3l2.4-2.7 4.6 3.4c.7.5 1.7.1 1.9-.7l3.4-15.6c.2-.9-.7-1.6-1.5-1.2ZM8.9 14.6l9.3-7.8-7.5 8.6-.2 2.9-1.6-3.7Z"/></svg></a>
           </div>
         </div>
 
@@ -1010,7 +1016,7 @@
           <div class="onav__card-top">
             <div class="onav__card-title">Showreel<br>moich prac</div>
           </div>
-          <div class="onav__card-thumb" aria-hidden="true"><video src="reel.mp4" autoplay muted loop playsinline preload="metadata"></video></div>
+          <div class="onav__card-thumb" aria-hidden="true"><video src="reel.mp4" autoplay muted loop playsinline disablepictureinpicture disableremoteplayback preload="metadata"></video></div>
         </a>
       </div>
       </div>
@@ -1079,10 +1085,10 @@
     <h2 class="samen__title" data-word-pop>Szukam zespołu, z którym się rozwinę</h2>
     <p class="samen__text">Projektant produktowy &mdash; strategia, systemy, UI i front-end. Pełna odpowiedzialność od początku do końca.</p>
     <nav class="samen__socials" aria-label="Social links">
-      <a class="sq-btn" href="#" target="_blank" rel="noopener" data-sqbtn><span class="sq-btn__main"><span class="sq-btn__fill"></span><img class="sq-btn__ico" src="logos/behance.svg" alt="" /><span class="sq-btn__roll"><span>Behance</span><span aria-hidden="true">Behance</span></span></span></a>
-      <a class="sq-btn" href="#" target="_blank" rel="noopener" data-sqbtn><span class="sq-btn__main"><span class="sq-btn__fill"></span><img class="sq-btn__ico" src="logos/dribbble.svg" alt="" /><span class="sq-btn__roll"><span>Dribbble</span><span aria-hidden="true">Dribbble</span></span></span></a>
-      <a class="sq-btn" href="#" target="_blank" rel="noopener" data-sqbtn><span class="sq-btn__main"><span class="sq-btn__fill"></span><img class="sq-btn__ico" src="logos/linkedin.svg" alt="" /><span class="sq-btn__roll"><span>LinkedIn</span><span aria-hidden="true">LinkedIn</span></span></span></a>
-      <a class="sq-btn" href="#" target="_blank" rel="noopener" data-sqbtn><span class="sq-btn__main"><span class="sq-btn__fill"></span><img class="sq-btn__ico" src="logos/telegram.svg" alt="" /><span class="sq-btn__roll"><span>Telegram</span><span aria-hidden="true">Telegram</span></span></span></a>
+      <a class="sq-btn" href="https://www.behance.net/YuriiChern11" target="_blank" rel="noopener" data-sqbtn><span class="sq-btn__main"><span class="sq-btn__fill"></span><img class="sq-btn__ico" src="logos/behance.svg" alt="" /><span class="sq-btn__roll"><span>Behance</span><span aria-hidden="true">Behance</span></span></span></a>
+      <a class="sq-btn" href="https://dribbble.com/M1lano" target="_blank" rel="noopener" data-sqbtn><span class="sq-btn__main"><span class="sq-btn__fill"></span><img class="sq-btn__ico" src="logos/dribbble.svg" alt="" /><span class="sq-btn__roll"><span>Dribbble</span><span aria-hidden="true">Dribbble</span></span></span></a>
+      <a class="sq-btn" href="https://www.linkedin.com/in/yurii-chernii-40b97939a/" target="_blank" rel="noopener" data-sqbtn><span class="sq-btn__main"><span class="sq-btn__fill"></span><img class="sq-btn__ico" src="logos/linkedin.svg" alt="" /><span class="sq-btn__roll"><span>LinkedIn</span><span aria-hidden="true">LinkedIn</span></span></span></a>
+      <a class="sq-btn" href="https://t.me/m1lan081" target="_blank" rel="noopener" data-sqbtn><span class="sq-btn__main"><span class="sq-btn__fill"></span><img class="sq-btn__ico" src="logos/telegram.svg" alt="" /><span class="sq-btn__roll"><span>Telegram</span><span aria-hidden="true">Telegram</span></span></span></a>
     </nav>
   </div>
 
@@ -1094,7 +1100,7 @@
     <div class="samen__slide"><img src="case5.jpg" alt="" loading="lazy" /></div>
     <div class="samen__slide"><img src="case6.jpg" alt="" loading="lazy" /></div>
     <div class="samen__slide samen__slide--pad"><img src="case7.png" alt="" loading="lazy" /></div>
-    <div class="samen__slide samen__slide--zoom"><video src="case8.mp4" autoplay muted loop playsinline></video></div>
+    <div class="samen__slide samen__slide--zoom"><video src="case8.mp4" autoplay muted loop playsinline disablepictureinpicture disableremoteplayback></video></div>
     <div class="samen__slide samen__slide--pad"><img src="case15.jpg" alt="" loading="lazy" /></div>
     <div class="samen__slide samen__slide--pad"><img src="case16.png" alt="" loading="lazy" /></div>
     <div class="samen__slide samen__slide--pad"><img src="case-screen.jpg" alt="" loading="lazy" /></div>
@@ -1205,7 +1211,7 @@
   <p class="free__tag" data-word-pop>Gotowy omówić Twoją ofertę</p>
 
   <div class="free__actions">
-    <a class="sq-btn" href="mailto:hello@yurii.design" data-sqbtn>
+    <a class="sq-btn" href="mailto:cherniiyurii2024@gmail.com" data-sqbtn>
       <span class="sq-btn__main">
         <span class="sq-btn__fill"></span>
         <span class="sq-btn__roll"><span>Napisz do mnie</span><span aria-hidden="true">Napisz do mnie</span></span>
@@ -1280,21 +1286,21 @@
     <div class="foot__top">
       <div class="foot__lead">
         <h2 class="foot__title" data-word-pop>Zacznijmy rozmowę</h2>
-        <p class="foot__body">Otwarty na projekty produktowe &mdash; całe wdrożenia albo skupiony sprint. Napisz, co budujesz, na <a href="https://t.me/" target="_blank" rel="noopener">Telegram</a><span class="foot__avatars" aria-hidden="true"><span class="foot__av foot__av--photo"><img src="tg-1.png" alt="" /></span><span class="foot__av foot__av--logo"><img src="tg-2.svg" alt="" /></span></span> albo mailem, a wrócę z tym, jak bym się za to zabrał.</p>
+        <p class="foot__body">Otwarty na projekty produktowe &mdash; całe wdrożenia albo skupiony sprint. Napisz, co budujesz, na <a href="https://t.me/m1lan081" target="_blank" rel="noopener">Telegram</a><span class="foot__avatars" aria-hidden="true"><span class="foot__av foot__av--photo"><img src="tg-1.png" alt="" /></span><span class="foot__av foot__av--logo"><img src="tg-2.svg" alt="" /></span></span> albo mailem, a wrócę z tym, jak bym się za to zabrał.</p>
       </div>
 
       <div class="foot__side">
         <div class="foot__label">Kontakt</div>
         <div class="foot__contacts">
           <span>Ze Lwowa do Warszawy</span>
-          <a href="mailto:hello@yurii.design">hello@yurii.design</a>
+          <a href="mailto:cherniiyurii2024@gmail.com">cherniiyurii2024@gmail.com</a>
         </div>
         <div class="foot__label">Media</div>
         <nav class="foot__social" aria-label="Social links">
-          <a href="#" target="_blank" rel="noopener">Behance</a>
-          <a href="#" target="_blank" rel="noopener">Dribbble</a>
-          <a href="#" target="_blank" rel="noopener">LinkedIn</a>
-          <a href="#" target="_blank" rel="noopener">Telegram</a>
+          <a href="https://www.behance.net/YuriiChern11" target="_blank" rel="noopener">Behance</a>
+          <a href="https://dribbble.com/M1lano" target="_blank" rel="noopener">Dribbble</a>
+          <a href="https://www.linkedin.com/in/yurii-chernii-40b97939a/" target="_blank" rel="noopener">LinkedIn</a>
+          <a href="https://t.me/m1lan081" target="_blank" rel="noopener">Telegram</a>
         </nav>
         <div class="foot__image"><img src="photo-1.png" alt="Yurii Chernii" loading="lazy" /></div>
       </div>
@@ -1303,7 +1309,7 @@
     <div class="foot__bar">
       <span>© 2026</span>
       <span class="foot__bar-right">
-        <a href="#">Yurii Chernii</a>
+        <a href="buff-site-pl.html">Yurii Chernii</a>
       </span>
     </div>
   </footer>

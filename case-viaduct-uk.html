@@ -6,7 +6,7 @@
 <title>Monte — кейс</title>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Gelasio:ital,wght@0,400..700;1,400..700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
 <style>
   /* geometry read off the Figma frame (1528 wide):
      left column x21 w367 · right column x409 w1098 · content top 94.5
@@ -17,7 +17,7 @@
     --paper:#FBFBFB;
     --line:rgba(22,22,22,.14);
     --chip:#ededed;
-    --serif:"Inter","Helvetica Now Display",Arial,sans-serif;
+    --serif:"Gelasio",Georgia,serif;
     --sans:"Inter","Helvetica Now Display",Arial,sans-serif;
     --ease:cubic-bezier(.16,1,.3,1);
     --pad:1.37vw;
@@ -328,13 +328,13 @@
 
   @media (max-width:760px){
     .onav__panel{grid-template-columns:1fr;gap:16px;padding:18px 16px 20px}
-    .onav__card{order:-1}
+    .onav__card{order:1}
     .onav__logo svg{height:22px}
     .onav__clip{overflow-y:auto}
   }
 
   @media (max-width:520px){
-    .onav__menu span{display:none}
+    .onav__menu .onav__btn-roll{display:none}
     .onav__btn.is-login{display:none}
   }
 
@@ -813,12 +813,14 @@
   @media (max-width:900px){
     :root{--left:auto;--pad:16px;--gap:0px;--top:84px}
     .proj{flex-direction:column}
-    .proj__left{position:static;width:100%;height:auto;padding:96px 0 0}
-    .proj__title{font-size:26px;line-height:32px}
-    .toc li .toc__b{grid-template-rows:1fr;opacity:1;padding-bottom:18px}
+    .proj__left{display:none}
     .proj__media{padding-top:28px}
     .shot{border-radius:16px}
     .pair{grid-template-columns:1fr}
+    .tp-grid{grid-template-columns:1fr}
+    .block__eyebrow,.block__h,.block__sub,.block__text,.block__list,.block__tasks,.block__callout,.block__faq,.meta{
+      max-width:100%;margin-left:0;margin-right:0;
+    }
   }
   @media (prefers-reduced-motion:reduce){*{transition-duration:.001s!important}}
 
@@ -912,9 +914,45 @@
     background:linear-gradient(150deg,#2b2d33,#1d1f24);
   }
   .foot__image img{width:100%;height:100%;object-fit:cover;object-position:center 40.5%;display:block;filter:grayscale(1)}
+
+  /* ================= OPENER (ported from buff-site-uk.html) ================= */
+  .opener{
+    position:fixed;inset:0;z-index:9000;
+    background:var(--ink);
+    display:flex;align-items:center;justify-content:center;
+  }
+  .opener__row{
+    position:relative;
+    display:grid;
+    grid-template-columns:1fr auto 1fr;
+    align-items:center;
+    column-gap:16px;
+    width:100%;
+    font-family:var(--serif);font-optical-sizing:auto;font-weight:400;
+    font-size:clamp(1.6rem,5vw,3.5rem);letter-spacing:-.02em;color:#fff;
+  }
+  .opener__word{display:inline-block;overflow:hidden;vertical-align:top}
+  .opener__word > span{display:inline-block}
+  .opener__row > .opener__word:first-of-type{justify-self:end}
+  .opener__col{position:relative;display:inline-block;justify-self:start}
+  .opener__gifwrap{display:inline-flex;align-items:center;flex:none;justify-self:center}
+  .opener__gif{display:block;height:clamp(3em,26vh,5em);width:auto;object-fit:contain}
+  html.gsap-failed .opener{display:none}
+  html.gsap-failed .opener__word > span{transform:none!important}
 </style>
 </head>
 <body>
+
+  <!-- ================= OPENER ================= -->
+  <div class="opener" id="opener" aria-hidden="true">
+    <div class="opener__row">
+      <span class="opener__word"><span>Привіт,</span></span>
+      <span class="opener__gifwrap"><img class="opener__gif" src="run-cycle.gif" alt="" /></span>
+      <span class="opener__col">
+        <span class="opener__word"><span>Я Юрій.</span></span>
+      </span>
+    </div>
+  </div>
 
   <!-- ================= OSMO-STYLE FLOATING PILL HEADER ================= -->
   <div class="onav__scrim" id="onavScrim"></div>
@@ -966,10 +1004,10 @@
             <li><span class="onav__col-locked">Кейс 04 <span class="onav__pill-tag onav__pill-tag--muted">Незабаром</span></span></li>
           </ul>
           <div class="onav__socials">
-            <a href="#" aria-label="LinkedIn"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M6.94 5A1.94 1.94 0 1 1 3.06 5a1.94 1.94 0 0 1 3.88 0ZM3.3 8.5h3.3V21H3.3V8.5Zm5.2 0h3.16v1.7h.05c.44-.83 1.5-1.7 3.1-1.7 3.32 0 3.93 2.18 3.93 5v6.5h-3.3v-5.76c0-1.37-.02-3.14-1.92-3.14-1.92 0-2.21 1.5-2.21 3.04V21H8.5V8.5Z"/></svg></a>
-            <a href="#" aria-label="Dribbble"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M4 9.5c3 1 12 1 16.4-1M3.3 15c5-1.6 12-1 17-3.6M9 3c3 4 5 9.5 5.3 18"/></svg></a>
-            <a href="#" aria-label="Behance"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M4 5h5.4c1.9 0 3.3 1 3.3 2.8 0 1.1-.6 1.9-1.6 2.3 1.3.4 2.1 1.3 2.1 2.8 0 2.1-1.6 3.1-3.8 3.1H4V5Zm5 4.4c1 0 1.6-.4 1.6-1.3 0-.9-.6-1.3-1.6-1.3H6.6v2.6H9Zm.2 5.2c1.1 0 1.8-.5 1.8-1.5s-.7-1.5-1.8-1.5H6.6v3h2.6ZM14.5 8h5v1.3h-5V8ZM20 13.7c0 .2 0 .5 0 .7h-5.6c.1 1.3 1 2.1 2.2 2.1.9 0 1.6-.4 1.9-1.1h1.9c-.5 1.7-2 2.7-3.9 2.7-2.4 0-4.1-1.7-4.1-4.2 0-2.4 1.7-4.2 4.1-4.2 2.4 0 3.9 1.8 3.9 4Zm-5.5-1h3.5c-.1-1-.8-1.6-1.7-1.6-.9 0-1.6.6-1.8 1.6Z"/></svg></a>
-            <a href="#" aria-label="Telegram"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M21.5 3.5 2.7 10.8c-1 .4-1 1.8.1 2.1l4.4 1.4 1.7 5.3c.2.7 1.1.9 1.6.3l2.4-2.7 4.6 3.4c.7.5 1.7.1 1.9-.7l3.4-15.6c.2-.9-.7-1.6-1.5-1.2ZM8.9 14.6l9.3-7.8-7.5 8.6-.2 2.9-1.6-3.7Z"/></svg></a>
+            <a href="https://www.linkedin.com/in/yurii-chernii-40b97939a/" target="_blank" rel="noopener" aria-label="LinkedIn"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M6.94 5A1.94 1.94 0 1 1 3.06 5a1.94 1.94 0 0 1 3.88 0ZM3.3 8.5h3.3V21H3.3V8.5Zm5.2 0h3.16v1.7h.05c.44-.83 1.5-1.7 3.1-1.7 3.32 0 3.93 2.18 3.93 5v6.5h-3.3v-5.76c0-1.37-.02-3.14-1.92-3.14-1.92 0-2.21 1.5-2.21 3.04V21H8.5V8.5Z"/></svg></a>
+            <a href="https://dribbble.com/M1lano" target="_blank" rel="noopener" aria-label="Dribbble"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M4 9.5c3 1 12 1 16.4-1M3.3 15c5-1.6 12-1 17-3.6M9 3c3 4 5 9.5 5.3 18"/></svg></a>
+            <a href="https://www.behance.net/YuriiChern11" target="_blank" rel="noopener" aria-label="Behance"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M4 5h5.4c1.9 0 3.3 1 3.3 2.8 0 1.1-.6 1.9-1.6 2.3 1.3.4 2.1 1.3 2.1 2.8 0 2.1-1.6 3.1-3.8 3.1H4V5Zm5 4.4c1 0 1.6-.4 1.6-1.3 0-.9-.6-1.3-1.6-1.3H6.6v2.6H9Zm.2 5.2c1.1 0 1.8-.5 1.8-1.5s-.7-1.5-1.8-1.5H6.6v3h2.6ZM14.5 8h5v1.3h-5V8ZM20 13.7c0 .2 0 .5 0 .7h-5.6c.1 1.3 1 2.1 2.2 2.1.9 0 1.6-.4 1.9-1.1h1.9c-.5 1.7-2 2.7-3.9 2.7-2.4 0-4.1-1.7-4.1-4.2 0-2.4 1.7-4.2 4.1-4.2 2.4 0 3.9 1.8 3.9 4Zm-5.5-1h3.5c-.1-1-.8-1.6-1.7-1.6-.9 0-1.6.6-1.8 1.6Z"/></svg></a>
+            <a href="https://t.me/m1lan081" target="_blank" rel="noopener" aria-label="Telegram"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M21.5 3.5 2.7 10.8c-1 .4-1 1.8.1 2.1l4.4 1.4 1.7 5.3c.2.7 1.1.9 1.6.3l2.4-2.7 4.6 3.4c.7.5 1.7.1 1.9-.7l3.4-15.6c.2-.9-.7-1.6-1.5-1.2ZM8.9 14.6l9.3-7.8-7.5 8.6-.2 2.9-1.6-3.7Z"/></svg></a>
           </div>
         </div>
 
@@ -981,7 +1019,7 @@
           <div class="onav__card-top">
             <div class="onav__card-title">Шоурил<br>моїх робіт</div>
           </div>
-          <div class="onav__card-thumb" aria-hidden="true"><video src="reel.mp4" autoplay muted loop playsinline preload="metadata"></video></div>
+          <div class="onav__card-thumb" aria-hidden="true"><video src="reel.mp4" autoplay muted loop playsinline disablepictureinpicture disableremoteplayback preload="metadata"></video></div>
         </a>
       </div>
       </div>
@@ -1110,7 +1148,7 @@
 
     <div class="proj__media">
       <section class="block" id="c1">
-        <div class="shot"><video src="case-showreel.mp4" autoplay muted loop playsinline preload="metadata"></video></div>
+        <div class="shot"><video src="case-showreel.mp4" autoplay muted loop playsinline disablepictureinpicture disableremoteplayback preload="metadata"></video></div>
         <p class="block__eyebrow">Monte</p>
         <h2 class="block__h">E-commerce для власного бренду автотюнінгу</h2>
         <p class="block__text">Monte &mdash; це власний онлайн-магазин екстерʼєрного тюнінгу з кастомізованими деталями: спойлери, боді-кіти, сплітери й дифузори. Я провів повний цикл &mdash; конкурентний аналіз і інтервʼю з покупцями, персони та JTBD, CJM з точками відвалу, інформаційну архітектуру та флоу, пріоритизацію MVP, UI kit на токенах, десктоп і мобайл, та handoff-документацію для розробки.</p>
@@ -1155,7 +1193,7 @@
       </section>
 
       <section class="block" id="c3">
-        <div class="shot"><video src="Pre-comp 2.mp4" autoplay muted loop playsinline preload="metadata"></video></div>
+        <div class="shot"><video src="Pre-comp 2.mp4" autoplay muted loop playsinline disablepictureinpicture disableremoteplayback preload="metadata"></video></div>
         <h2 class="block__h">Задачі проєкту</h2>
         <h3 class="block__sub">Мої задачі</h3>
         <ol class="block__tasks">
@@ -1275,7 +1313,7 @@
           <li>Другий візит починається з нуля: авто треба вводити знову.</li>
           <li>Незрозуміло, хто і де може встановити деталь після доставки.</li>
         </ul>
-        <div class="shot"><video src="6zLSqC88zHcNhpdavttrvdISbqk.mp4" autoplay muted loop playsinline preload="metadata"></video></div>
+        <div class="shot"><video src="6zLSqC88zHcNhpdavttrvdISbqk.mp4" autoplay muted loop playsinline disablepictureinpicture disableremoteplayback preload="metadata"></video></div>
       </section>
 
       <section class="block" id="c5">
@@ -1342,7 +1380,7 @@
       </section>
 
       <section class="block" id="c7">
-        <div class="shot"><video src="showreel2.mp4" autoplay muted loop playsinline preload="metadata"></video></div>
+        <div class="shot"><video src="showreel2.mp4" autoplay muted loop playsinline disablepictureinpicture disableremoteplayback preload="metadata"></video></div>
         <h2 class="block__h">UI Kit</h2>
         <p class="block__text">Двошарова модель токенів: base &rarr; semantic roles. Компоненти будуються на варіантах і ролях, а не на окремому токені під кожен випадок, тож система лишається компактною зі зростанням кількості екранів.</p>
         <div class="shot"><img src="webcollage2.jpg" alt="" loading="lazy" /></div>
@@ -1351,7 +1389,7 @@
       <section class="block" id="c8">
         <h2 class="block__h">Конфігуратор</h2>
         <p class="block__text">Люди хочуть свою збірку, а не заводський пресет &mdash; і хочуть побачити її до рішення. Конфігуратор &mdash; окрема сторінка, а не віджет на картці товару, бо 3D-прев'ю і три набори опцій потребують місця: модель зліва, матеріал, покриття і колір &mdash; справа. Кожен вибір перемальовує модель і оновлює ціну, а комбінації, які неможливо виготовити, лишаються видимими, але приглушеними &mdash; тож нічого не стане сюрпризом на чекауті.</p>
-        <div class="shot"><video src="Con 1.mp4" autoplay muted loop playsinline preload="metadata"></video></div>
+        <div class="shot"><video src="Con 1.mp4" autoplay muted loop playsinline disablepictureinpicture disableremoteplayback preload="metadata"></video></div>
         <h2 class="block__h">Каталог і сторінка товару</h2>
         <p class="block__text">У каталозі: фільтри зліва, результати справа, кожен вже звужений під обране авто, з ціною і наявністю на картці. Сторінка товару ділиться на дві частини &mdash; галерея зліва, ціна, кнопка покупки і вхід у конфігуратор справа &mdash; а нижче специфікації, встановлення, політика повернення й відгуки, відфільтровані під ту саму модель.</p>
         <div class="shot"><img src="webcollage3.jpg" alt="" loading="lazy" /></div>
@@ -1373,7 +1411,7 @@
           </div>
           <div class="caro__dots" data-caro-dots></div>
         </div>
-        <div class="shot"><video src="comp331.mp4" autoplay muted loop playsinline preload="metadata"></video></div>
+        <div class="shot"><video src="comp331.mp4" autoplay muted loop playsinline disablepictureinpicture disableremoteplayback preload="metadata"></video></div>
         <div class="shot"><img src="webcollage6.jpg" alt="" loading="lazy" /></div>
       </section>
 
@@ -1390,21 +1428,21 @@
     <div class="foot__top">
       <div class="foot__lead">
         <h2 class="foot__title">Почнімо розмову</h2>
-        <p class="foot__body">Відкритий до продуктового дизайну &mdash; повні проєкти або сфокусований спринт. Розкажи, що будуєш, у <a href="https://t.me/" target="_blank" rel="noopener">Telegram</a><span class="foot__avatars" aria-hidden="true"><span class="foot__av foot__av--photo"><img src="tg-1.png" alt="" /></span><span class="foot__av foot__av--logo"><img src="tg-2.svg" alt="" /></span></span> або на пошту &mdash; і я повернусь з тим, як би я це зробив.</p>
+        <p class="foot__body">Відкритий до продуктового дизайну &mdash; повні проєкти або сфокусований спринт. Розкажи, що будуєш, у <a href="https://t.me/m1lan081" target="_blank" rel="noopener">Telegram</a><span class="foot__avatars" aria-hidden="true"><span class="foot__av foot__av--photo"><img src="tg-1.png" alt="" /></span><span class="foot__av foot__av--logo"><img src="tg-2.svg" alt="" /></span></span> або на пошту &mdash; і я повернусь з тим, як би я це зробив.</p>
       </div>
 
       <div class="foot__side">
         <div class="foot__label">Контакти</div>
         <div class="foot__contacts">
           <span>Зі Львова до Варшави</span>
-          <a href="mailto:hello@yurii.design">hello@yurii.design</a>
+          <a href="mailto:cherniiyurii2024@gmail.com">cherniiyurii2024@gmail.com</a>
         </div>
         <div class="foot__label">Медіа</div>
         <nav class="foot__social" aria-label="Social links">
-          <a href="#" target="_blank" rel="noopener">Behance</a>
-          <a href="#" target="_blank" rel="noopener">Dribbble</a>
-          <a href="#" target="_blank" rel="noopener">LinkedIn</a>
-          <a href="#" target="_blank" rel="noopener">Telegram</a>
+          <a href="https://www.behance.net/YuriiChern11" target="_blank" rel="noopener">Behance</a>
+          <a href="https://dribbble.com/M1lano" target="_blank" rel="noopener">Dribbble</a>
+          <a href="https://www.linkedin.com/in/yurii-chernii-40b97939a/" target="_blank" rel="noopener">LinkedIn</a>
+          <a href="https://t.me/m1lan081" target="_blank" rel="noopener">Telegram</a>
         </nav>
         <div class="foot__image"><img src="photo-1.png" alt="Yurii Chernii" loading="lazy" /></div>
       </div>
@@ -1413,7 +1451,7 @@
     <div class="foot__bar">
       <span>&copy; 2026</span>
       <span class="foot__bar-right">
-        <a href="#">Yurii Chernii</a>
+        <a href="buff-site-uk.html">Yurii Chernii</a>
       </span>
     </div>
   </footer>
@@ -1786,6 +1824,23 @@
     lbClose.addEventListener('click', close);
     lb.addEventListener('click', function (e) { if (e.target === lb) close(); });
     document.addEventListener('keydown', function (e) { if (e.key === 'Escape') close(); });
+  })();
+  </script>
+
+  <script>
+  /* ---------- opener intro (ported from buff-site-uk.html) ---------- */
+  (function () {
+    var reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (!window.gsap || reduce) {
+      document.documentElement.classList.add('gsap-failed');
+      return;
+    }
+    gsap.set('.opener__word > span', { yPercent: 118 });
+    var tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
+    tl.to('.opener__word > span', { yPercent: 0, duration: 0.7, stagger: 0.09 }, 0.25)
+      .from('.opener__gif', { scale: 0.55, duration: 0.6, ease: 'back.out(1.7)' }, 0.34)
+      .to('.opener', { yPercent: -101, duration: 0.8, ease: 'power4.inOut' }, '+=0.9')
+      .set('.opener', { display: 'none' });
   })();
   </script>
 </body>

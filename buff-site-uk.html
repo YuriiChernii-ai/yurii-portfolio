@@ -307,6 +307,27 @@
   .case[hidden]{display:none}
   .case--rev{grid-template-columns:989fr 476fr}   /* media stays first in the DOM, this track is just wider now */
 
+  /* Concepts tab: same cards, laid out 2-up instead of the Cases tab's
+     one-big-row-per-case stack. Media goes on top of its own heading
+     (order, not DOM order — the "cases" .case--rev cards stay reversible
+     if this class is ever mixed with them) since a half-width column has
+     no room for the media|text side-by-side split. */
+  .cases__grid.is-concepts{
+    display:grid;grid-template-columns:1fr 1fr;
+    gap:clamp(2rem,3vw,2.75rem) clamp(1.25rem,2.5vw,2rem);
+  }
+  .cases__grid.is-concepts .case,
+  .cases__grid.is-concepts .case--rev{
+    grid-template-columns:1fr;row-gap:0;
+  }
+  .cases__grid.is-concepts .case__media{order:1;aspect-ratio:4/3}
+  .cases__grid.is-concepts .case__info{order:2}
+  .cases__grid.is-concepts .case__copy{margin-top:18px}
+  .cases__grid.is-concepts .case__head{font-size:clamp(1.05rem,1.5vw,1.3rem)}
+  @media (max-width:720px){
+    .cases__grid.is-concepts{grid-template-columns:1fr}
+  }
+
   /* only the image is a link — the text beside it is plain, not clickable */
   .case__media{
     display:block;pointer-events:auto;text-decoration:none;
@@ -1305,10 +1326,30 @@
         </span>
       </div>
 
-      <div class="case" data-group="concepts" hidden><a class="case__media" href="#"><span class="case__media-fill"></span></a></div>
-      <div class="case" data-group="concepts" hidden><a class="case__media" href="#"><span class="case__media-fill"></span></a></div>
-      <div class="case" data-group="concepts" hidden><a class="case__media" href="#"><span class="case__media-fill"></span></a></div>
-      <div class="case" data-group="concepts" hidden><a class="case__media" href="#"><span class="case__media-fill"></span></a></div>
+      <div class="case" data-group="concepts" hidden>
+        <a class="case__media" href="#"><span class="case__media-fill"></span></a>
+        <span class="case__info"><span class="case__copy"><span class="case__head">Концепт 01</span></span></span>
+      </div>
+      <div class="case" data-group="concepts" hidden>
+        <a class="case__media" href="#"><span class="case__media-fill"></span></a>
+        <span class="case__info"><span class="case__copy"><span class="case__head">Концепт 02</span></span></span>
+      </div>
+      <div class="case" data-group="concepts" hidden>
+        <a class="case__media" href="#"><span class="case__media-fill"></span></a>
+        <span class="case__info"><span class="case__copy"><span class="case__head">Концепт 03</span></span></span>
+      </div>
+      <div class="case" data-group="concepts" hidden>
+        <a class="case__media" href="#"><span class="case__media-fill"></span></a>
+        <span class="case__info"><span class="case__copy"><span class="case__head">Концепт 04</span></span></span>
+      </div>
+      <div class="case" data-group="concepts" hidden>
+        <a class="case__media" href="#"><span class="case__media-fill"></span></a>
+        <span class="case__info"><span class="case__copy"><span class="case__head">Концепт 05</span></span></span>
+      </div>
+      <div class="case" data-group="concepts" hidden>
+        <a class="case__media" href="#"><span class="case__media-fill"></span></a>
+        <span class="case__info"><span class="case__copy"><span class="case__head">Концепт 06</span></span></span>
+      </div>
     </div>
   </section>
 
@@ -2147,6 +2188,7 @@
     if (!wrap) return;
     var tabs = wrap.querySelectorAll('.cases__tab');
     var cards = wrap.querySelectorAll('.case');
+    var grid = wrap.querySelector('.cases__grid');
     var reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
     function select(group) {
@@ -2155,6 +2197,7 @@
         t.classList.toggle('is-active', on);
         t.setAttribute('aria-selected', on ? 'true' : 'false');
       });
+      if (grid) grid.classList.toggle('is-concepts', group === 'concepts');
       var shown = [];
       cards.forEach(function (c) {
         if (c.dataset.group === group) { c.hidden = false; shown.push(c); }

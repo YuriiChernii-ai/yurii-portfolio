@@ -1297,7 +1297,7 @@
             </a>
           </span>
         </span>
-        <a class="case__media" href="case-monte-pl.html"><video src="case-1.mp4" autoplay muted loop playsinline disablepictureinpicture disableremoteplayback preload="metadata"></video></a>
+        <a class="case__media" href="case-monte-pl.html"><img src="case16.png" alt="" loading="lazy" /></a>
       </div>
       <div class="case case--rev" data-group="cases">
         <a class="case__media" href="#"><span class="case__media-fill"></span></a>
@@ -1871,18 +1871,18 @@
         }
 
         /* ---- gate the heavy hero motion when it's scrolled away (perf) ----
-           pause it too while it's off-screen — an svg-renderer Lottie plus
-           the video layer both running under a fast scroll is what caused the
-           main-thread jank between the hero and the cases grid. */
+           the reel video is already handled by the shared caseVidIO observer
+           further down — duplicating that here meant two observers fighting
+           over the same <video>'s play()/pause() right as it crossed the
+           viewport edge, which is exactly the jank the user hit. This one
+           only owns the Lottie + chip timer now. */
         var hero = document.querySelector('.hero2');
-        var reelVid = document.querySelector('.hero2__reel video');
         if (hero && 'IntersectionObserver' in window) {
           var ioFirst = true;
           new IntersectionObserver(function (ents) {
             if (ioFirst) { ioFirst = false; return; }
             var vis = ents[0].isIntersecting;
             if (a) { vis ? a.play() : a.pause(); }
-            if (reelVid) { vis ? reelVid.play().catch(function () {}) : reelVid.pause(); }
             if (spawnTimer) { clearInterval(spawnTimer); spawnTimer = vis ? setInterval(spawnChip, 2600) : null; }
           }, { rootMargin: '150px' }).observe(hero);
         }

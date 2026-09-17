@@ -976,6 +976,13 @@
   .opener__col{position:relative;display:inline-block;justify-self:start;min-width:0;overflow:hidden}
   .opener__gifwrap{display:inline-flex;align-items:center;flex:none;justify-self:center}
   .opener__gif{display:block;height:clamp(3em,26vh,5em);width:auto;object-fit:contain}
+  /* on a phone the ask flips: centre the "Hey, [gif] I'm Yurii." group as
+     one block instead of pinning the gif to the exact screen centre. Flex
+     + justify-content:center does that directly -- the grid-column dance
+     above is what desktop keeps, this just overrides it below 720px. */
+  @media (max-width:720px){
+    .opener__row{display:flex;justify-content:center}
+  }
   html.gsap-failed .opener{display:none}
   html.gsap-failed .opener__word > span{transform:none!important}
 </style>

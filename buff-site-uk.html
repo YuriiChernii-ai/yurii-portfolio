@@ -797,6 +797,13 @@
     width:2.6em;height:1.05em;
     border:1px dashed rgba(255,255,255,.45);border-radius:5px;
   }
+  /* on a phone the ask flips: centre the "Hey, [gif] I'm Yurii." group as
+     one block instead of pinning the gif to the exact screen centre. Flex
+     + justify-content:center does that directly -- the grid-column dance
+     above is what desktop keeps, this just overrides it below 720px. */
+  @media (max-width:720px){
+    .opener__row{display:flex;justify-content:center}
+  }
 
   /* ============ SAMEN section (line-draw between images, from tweemans.nl) ============ */
   .samen{

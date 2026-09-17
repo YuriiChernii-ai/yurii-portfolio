@@ -355,6 +355,9 @@
     display:block;object-fit:cover;will-change:transform;
     transition:transform .5s var(--ease);
   }
+  .case__media:hover img,
+  .case__media:hover video{transform:scale(1.035)}
+
   /* NDA case: blur + lock badge on hover, instead of the usual zoom-only */
   .case.is-locked .case__media img{transition:transform .5s var(--ease),filter .5s var(--ease)}
   .case.is-locked .case__media:hover img{filter:blur(10px)}
@@ -2076,17 +2079,7 @@
           gsap.from('#samen .samen__btn', {
             y: 22, opacity: 0, duration: 0.6, ease: 'power3.out',
             scrollTrigger: { trigger: '#samen .samen__btn', start: 'top 90%' }
-          });
-
-          /* CASES: grid staggers in on scroll (no continuous scroll-drift) */
-          if (document.querySelector('#cases .case')) {
-            gsap.from('#cases .case[data-group="cases"]', {
-              y: 42, opacity: 0, duration: 0.7, stagger: 0.09, ease: 'power3.out',
-              clearProps: 'transform,opacity',
-              scrollTrigger: { trigger: '#cases .cases__grid', start: 'top 82%' }
-            });
-          }
-        }
+          });        }
       }
     }
   })();

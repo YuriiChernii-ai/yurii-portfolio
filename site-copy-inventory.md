@@ -3,7 +3,7 @@
 This document is a complete inventory of every piece of user-visible text copy found on the two real, linked pages of this portfolio site — `buff-site.html` (home/main page) and `about-me.html` (about page) — organized by page and by section, in top-to-bottom reading order. It is meant to be handed to another AI agent (or a human copywriter) to get suggestions on which copy to rewrite and how; it is a faithful transcription, not an edit — wording, capitalization and punctuation are kept exactly as they appear in the HTML (HTML entities like `&mdash;` have been decoded to their real character, e.g. `—`).
 
 **Intentionally excluded from this inventory:**
-- All case-study pages (e.g. `case-viaduct.html`) — skipped per request.
+- All case-study pages (e.g. `case-monte.html`) — skipped per request.
 - The translated duplicate pages `buff-site-pl.html`, `buff-site-uk.html`, `about-me-pl.html`, `about-me-uk.html` — these are machine-translated copies of the same English copy covered below, so including them would just repeat this content three times over.
 - Stray/dev fragment files that are not real linked pages: `_onav.html`, `buff-hero.html`, `chipsa-widgets.html`. These were checked with a text search across `buff-site.html` and `about-me.html` and are not referenced (linked, `<script src>`'d, or included) from either page — they appear to be leftover component snippets/scratch files, not live pages, so they are excluded rather than marked "unclear."
 
@@ -47,7 +47,7 @@ This document is a complete inventory of every piece of user-visible text copy f
 - Tab labels (toggle): "Cases", "Concepts"
 - Section `aria-label`: "Selected work"; toggle `aria-label`: "Filter work"
 
-**Case 1 (live case — links to case-viaduct.html, excluded as a page but its teaser copy here is on the home page):**
+**Case 1 (live case — links to case-monte.html, excluded as a page but its teaser copy here is on the home page):**
 - Eyebrow: "Client"
 - Headline: "Illustrated a full concept series exploring light, form and structural rhythm"
 - Body: "Art direction, colour grading and final compositing across a full digital newspaper concept. Each spread explores how light interacts with structure, building one consistent visual language from cover to close."

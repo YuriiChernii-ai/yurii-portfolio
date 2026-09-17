@@ -1850,8 +1850,9 @@
         }
 
         /* ---- gate the heavy hero motion when it's scrolled away (perf) ----
-           NOTE: never pause the folder Lottie here — pausing it was leaving it
-           frozen on frame 0. Only the video + the chip fallback timer. */
+           pause it too while it's off-screen — an svg-renderer Lottie plus
+           the video layer both running under a fast scroll is what caused the
+           main-thread jank between the hero and the cases grid. */
         var hero = document.querySelector('.hero2');
         var reelVid = document.querySelector('.hero2__reel video');
         if (hero && 'IntersectionObserver' in window) {
@@ -1859,6 +1860,7 @@
           new IntersectionObserver(function (ents) {
             if (ioFirst) { ioFirst = false; return; }
             var vis = ents[0].isIntersecting;
+            if (a) { vis ? a.play() : a.pause(); }
             if (reelVid) { vis ? reelVid.play().catch(function () {}) : reelVid.pause(); }
             if (spawnTimer) { clearInterval(spawnTimer); spawnTimer = vis ? setInterval(spawnChip, 2600) : null; }
           }, { rootMargin: '150px' }).observe(hero);

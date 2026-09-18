@@ -527,7 +527,7 @@
   /* next case: the site's own .samen__btn pill component — cursor-fill
      hover, dark pill, rolling label — no separate icon-square segment,
      just an icon on each side of the label inside the one pill */
-  .proj__next{padding-top:24px}
+  .proj__next{padding-top:24px;display:flex;flex-wrap:wrap;gap:12px}
   .samen__btn{
     display:inline-flex;align-items:stretch;
     height:44px;
@@ -567,6 +567,9 @@
   .nextcase__icoL img{width:100%;height:100%;display:block}
   .nextcase__icoR{margin-left:8px}
   .nextcase__icoR svg{width:16px;height:16px;display:block}
+  .samen__btn--outline .samen__btn-main{background:transparent;color:var(--ink);box-shadow:inset 0 0 0 1px var(--ink)}
+  .samen__btn--outline:hover .samen__btn-text,
+  .samen__btn--outline.is-hover .samen__btn-text{color:#fff}
 
   /* ---------- media column ---------- */
   .proj__media{flex:1 1 auto;min-width:0;padding-top:var(--top);padding-bottom:10vh}
@@ -1093,6 +1096,14 @@
               <span class="samen__btn-roll"><span>Następny projekt</span><span aria-hidden="true">Następny projekt</span></span>
             </span>
             <span class="nextcase__icoR"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8h10M9 4l4 4-4 4"/></svg></span>
+          </span>
+        </a>
+        <a class="samen__btn samen__btn--outline" href="/pl/?tab=projects#cases" data-btn-hover>
+          <span class="samen__btn-main">
+            <span class="samen__btn-circle"></span>
+            <span class="samen__btn-text">
+              <span class="samen__btn-roll"><span>Wszystkie projekty</span><span aria-hidden="true">Wszystkie projekty</span></span>
+            </span>
           </span>
         </a>
       </div>

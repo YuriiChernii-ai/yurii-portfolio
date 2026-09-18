@@ -2218,6 +2218,8 @@
       t.addEventListener('click', function () { select(t.dataset.group); });
     });
 
+    if (new URLSearchParams(location.search).get('tab') === 'projects') select('concepts');
+
     /* ---- pause case videos while off-screen (perf) ----
        a clipped, playing <video> being scrolled through the compositor is
        the main source of scroll jank here — same fix as the hero reel. */

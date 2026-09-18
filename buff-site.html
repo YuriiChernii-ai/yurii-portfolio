@@ -2236,6 +2236,8 @@
       t.addEventListener('click', function () { select(t.dataset.group); });
     });
 
+    if (new URLSearchParams(location.search).get('tab') === 'projects') select('concepts');
+
     /* ---- pause every off-screen video (perf) ----
        a clipped, playing <video> being scrolled through the compositor is
        the main source of scroll jank here. This covers the case tiles AND

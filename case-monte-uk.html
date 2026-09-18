@@ -1196,7 +1196,7 @@
 
     <div class="proj__media">
       <section class="block" id="c1">
-        <div class="shot"><video src="case-showreel.mp4" autoplay muted loop playsinline disablepictureinpicture disableremoteplayback preload="metadata"></video></div>
+        <div class="shot"><video data-src="case-showreel.mp4" muted loop playsinline disablepictureinpicture disableremoteplayback preload="none"></video></div>
         <p class="block__eyebrow">Monte</p>
         <h2 class="block__h">E-commerce для власного бренду автотюнінгу</h2>
         <p class="block__text">Monte &mdash; це власний онлайн-магазин екстерʼєрного тюнінгу з кастомізованими деталями: спойлери, боді-кіти, сплітери й дифузори. Я провів повний цикл &mdash; конкурентний аналіз і інтервʼю з покупцями, персони та JTBD, CJM з точками відвалу, інформаційну архітектуру та флоу, пріоритизацію MVP, UI kit на токенах, десктоп і мобайл, та handoff-документацію для розробки.</p>
@@ -1241,7 +1241,7 @@
       </section>
 
       <section class="block" id="c3">
-        <div class="shot"><video src="Pre-comp 2.mp4" autoplay muted loop playsinline disablepictureinpicture disableremoteplayback preload="metadata"></video></div>
+        <div class="shot"><video data-src="Pre-comp 2.mp4" muted loop playsinline disablepictureinpicture disableremoteplayback preload="none"></video></div>
         <h2 class="block__h">Задачі проєкту</h2>
         <h3 class="block__sub">Мої задачі</h3>
         <ol class="block__tasks">
@@ -1361,7 +1361,7 @@
           <li>Другий візит починається з нуля: авто треба вводити знову.</li>
           <li>Незрозуміло, хто і де може встановити деталь після доставки.</li>
         </ul>
-        <div class="shot"><video src="6zLSqC88zHcNhpdavttrvdISbqk.mp4" autoplay muted loop playsinline disablepictureinpicture disableremoteplayback preload="metadata"></video></div>
+        <div class="shot"><video data-src="6zLSqC88zHcNhpdavttrvdISbqk.mp4" muted loop playsinline disablepictureinpicture disableremoteplayback preload="none"></video></div>
       </section>
 
       <section class="block" id="c5">
@@ -1428,7 +1428,7 @@
       </section>
 
       <section class="block" id="c7">
-        <div class="shot"><video src="showreel2.mp4" autoplay muted loop playsinline disablepictureinpicture disableremoteplayback preload="metadata"></video></div>
+        <div class="shot"><video data-src="showreel2.mp4" muted loop playsinline disablepictureinpicture disableremoteplayback preload="none"></video></div>
         <h2 class="block__h">UI Kit</h2>
         <p class="block__text">Двошарова модель токенів: base &rarr; semantic roles. Компоненти будуються на варіантах і ролях, а не на окремому токені під кожен випадок, тож система лишається компактною зі зростанням кількості екранів.</p>
         <div class="shot"><img src="webcollage2.jpg" alt="" loading="lazy" /></div>
@@ -1437,7 +1437,7 @@
       <section class="block" id="c8">
         <h2 class="block__h">Конфігуратор</h2>
         <p class="block__text">Люди хочуть свою збірку, а не заводський пресет &mdash; і хочуть побачити її до рішення. Конфігуратор &mdash; окрема сторінка, а не віджет на картці товару, бо 3D-прев'ю і три набори опцій потребують місця: модель зліва, матеріал, покриття і колір &mdash; справа. Кожен вибір перемальовує модель і оновлює ціну, а комбінації, які неможливо виготовити, лишаються видимими, але приглушеними &mdash; тож нічого не стане сюрпризом на чекауті.</p>
-        <div class="shot"><video src="Con 1.mp4" autoplay muted loop playsinline disablepictureinpicture disableremoteplayback preload="metadata"></video></div>
+        <div class="shot"><video data-src="Con 1.mp4" muted loop playsinline disablepictureinpicture disableremoteplayback preload="none"></video></div>
         <h2 class="block__h">Каталог і сторінка товару</h2>
         <p class="block__text">У каталозі: фільтри зліва, результати справа, кожен вже звужений під обране авто, з ціною і наявністю на картці. Сторінка товару ділиться на дві частини &mdash; галерея зліва, ціна, кнопка покупки і вхід у конфігуратор справа &mdash; а нижче специфікації, встановлення, політика повернення й відгуки, відфільтровані під ту саму модель.</p>
         <div class="shot"><img src="webcollage3.jpg" alt="" loading="lazy" /></div>
@@ -1459,7 +1459,7 @@
           </div>
           <div class="caro__dots" data-caro-dots></div>
         </div>
-        <div class="shot"><video src="comp331.mp4" autoplay muted loop playsinline disablepictureinpicture disableremoteplayback preload="metadata"></video></div>
+        <div class="shot"><video data-src="comp331.mp4" muted loop playsinline disablepictureinpicture disableremoteplayback preload="none"></video></div>
         <div class="shot"><img src="webcollage6.jpg" alt="" loading="lazy" /></div>
       </section>
 
@@ -1896,6 +1896,33 @@
       .from('.opener__gif', { scale: 0.55, duration: 0.6, ease: 'back.out(1.7)' }, 0.34)
       .to('.opener', { yPercent: -101, duration: 0.8, ease: 'power4.inOut' }, '+=0.9')
       .set('.opener', { display: 'none' });
+  })();
+  </script>
+
+  <script>
+  /* ---------- lazy-load the heavy .shot showcase videos ----------
+     these run 3-18MB each; loading all seven on page load was the
+     main reason this page felt slow. Only fetch + play once a video
+     scrolls near the viewport, pause it once it scrolls away. */
+  (function () {
+    var vids = document.querySelectorAll('.shot video[data-src]');
+    if (!vids.length) return;
+    if (!('IntersectionObserver' in window)) {
+      vids.forEach(function (v) { v.src = v.dataset.src; v.play().catch(function () {}); });
+      return;
+    }
+    var io = new IntersectionObserver(function (ents) {
+      ents.forEach(function (ent) {
+        var v = ent.target;
+        if (ent.isIntersecting) {
+          if (!v.src) v.src = v.dataset.src;
+          v.play().catch(function () {});
+        } else {
+          v.pause();
+        }
+      });
+    }, { rootMargin: '400px' });
+    vids.forEach(function (v) { io.observe(v); });
   })();
   </script>
 </body>

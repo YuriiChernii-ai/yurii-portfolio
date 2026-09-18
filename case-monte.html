@@ -1196,7 +1196,7 @@
 
     <div class="proj__media">
       <section class="block" id="c1">
-        <div class="shot"><video src="case-showreel.mp4" autoplay muted loop playsinline disablepictureinpicture disableremoteplayback preload="metadata"></video></div>
+        <div class="shot"><video data-src="case-showreel.mp4" muted loop playsinline disablepictureinpicture disableremoteplayback preload="none"></video></div>
         <p class="block__eyebrow">Monte</p>
         <h2 class="block__h">Automotive e-commerce for own-brand car tuning</h2>
         <p class="block__text">Monte is an own-brand online store for exterior car tuning with customisable parts: spoilers, body kits, splitters and diffusers. I ran the full cycle &mdash; competitor analysis and buyer interviews, personas and JTBD, a CJM with drop-off points, information architecture and flows, MVP prioritisation, a token-based UI kit, desktop and mobile, and handoff documentation for development.</p>
@@ -1241,7 +1241,7 @@
       </section>
 
       <section class="block" id="c3">
-        <div class="shot"><video src="Pre-comp 2.mp4" autoplay muted loop playsinline disablepictureinpicture disableremoteplayback preload="metadata"></video></div>
+        <div class="shot"><video data-src="Pre-comp 2.mp4" muted loop playsinline disablepictureinpicture disableremoteplayback preload="none"></video></div>
         <h2 class="block__h">Product tasks</h2>
         <h3 class="block__sub">My tasks</h3>
         <ol class="block__tasks">
@@ -1361,7 +1361,7 @@
           <li>A second visit starts from zero: the car has to be entered again.</li>
           <li>It&rsquo;s unclear who or where can install the part after delivery.</li>
         </ul>
-        <div class="shot"><video src="6zLSqC88zHcNhpdavttrvdISbqk.mp4" autoplay muted loop playsinline disablepictureinpicture disableremoteplayback preload="metadata"></video></div>
+        <div class="shot"><video data-src="6zLSqC88zHcNhpdavttrvdISbqk.mp4" muted loop playsinline disablepictureinpicture disableremoteplayback preload="none"></video></div>
       </section>
 
       <section class="block" id="c5">
@@ -1428,7 +1428,7 @@
       </section>
 
       <section class="block" id="c7">
-        <div class="shot"><video src="showreel2.mp4" autoplay muted loop playsinline disablepictureinpicture disableremoteplayback preload="metadata"></video></div>
+        <div class="shot"><video data-src="showreel2.mp4" muted loop playsinline disablepictureinpicture disableremoteplayback preload="none"></video></div>
         <h2 class="block__h">UI Kit</h2>
         <p class="block__text">A two-layer token model: base &rarr; semantic roles. Components are built on variants and roles rather than a separate token for every case, which keeps the system compact as the number of screens grows.</p>
         <div class="shot"><img src="webcollage2.jpg" alt="" loading="lazy" /></div>
@@ -1437,7 +1437,7 @@
       <section class="block" id="c8">
         <h2 class="block__h">Configurator</h2>
         <p class="block__text">Users want a build of their own, not a factory preset &mdash; and want to see it before deciding. The configurator is a page of its own rather than a widget on the product card, because a 3D preview and three sets of options need the room: the model sits on the left, material, coating and colour on the right. Every choice redraws the model and updates the price, and combinations that can&rsquo;t be produced stay visible but dimmed &mdash; so nothing is a surprise at checkout.</p>
-        <div class="shot"><video src="Con 1.mp4" autoplay muted loop playsinline disablepictureinpicture disableremoteplayback preload="metadata"></video></div>
+        <div class="shot"><video data-src="Con 1.mp4" muted loop playsinline disablepictureinpicture disableremoteplayback preload="none"></video></div>
         <h2 class="block__h">Catalog and product page</h2>
         <p class="block__text">In the catalog: filters on the left, results on the right, every one of them already narrowed to the selected car, with price and availability on the card. The product page splits in two &mdash; gallery on the left, price, buy button and the way into the configurator on the right &mdash; and below it specs, installation, the return policy, and reviews filtered to the same model.</p>
         <div class="shot"><img src="webcollage3.jpg" alt="" loading="lazy" /></div>
@@ -1459,7 +1459,7 @@
           </div>
           <div class="caro__dots" data-caro-dots></div>
         </div>
-        <div class="shot"><video src="comp331.mp4" autoplay muted loop playsinline disablepictureinpicture disableremoteplayback preload="metadata"></video></div>
+        <div class="shot"><video data-src="comp331.mp4" muted loop playsinline disablepictureinpicture disableremoteplayback preload="none"></video></div>
         <div class="shot"><img src="webcollage6.jpg" alt="" loading="lazy" /></div>
       </section>
 
@@ -1896,6 +1896,33 @@
       .from('.opener__gif', { scale: 0.55, duration: 0.6, ease: 'back.out(1.7)' }, 0.34)
       .to('.opener', { yPercent: -101, duration: 0.8, ease: 'power4.inOut' }, '+=0.9')
       .set('.opener', { display: 'none' });
+  })();
+  </script>
+
+  <script>
+  /* ---------- lazy-load the heavy .shot showcase videos ----------
+     these run 3-18MB each; loading all seven on page load was the
+     main reason this page felt slow. Only fetch + play once a video
+     scrolls near the viewport, pause it once it scrolls away. */
+  (function () {
+    var vids = document.querySelectorAll('.shot video[data-src]');
+    if (!vids.length) return;
+    if (!('IntersectionObserver' in window)) {
+      vids.forEach(function (v) { v.src = v.dataset.src; v.play().catch(function () {}); });
+      return;
+    }
+    var io = new IntersectionObserver(function (ents) {
+      ents.forEach(function (ent) {
+        var v = ent.target;
+        if (ent.isIntersecting) {
+          if (!v.src) v.src = v.dataset.src;
+          v.play().catch(function () {});
+        } else {
+          v.pause();
+        }
+      });
+    }, { rootMargin: '400px' });
+    vids.forEach(function (v) { io.observe(v); });
   })();
   </script>
 </body>

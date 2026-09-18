@@ -1,0 +1,1569 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8" />
+<base href="/" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Zaprojektowałem sklep e-commerce dla Lime Meble, marki mebli — Yurii Chernii</title>
+<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Gelasio:ital,wght@0,400..700;1,400..700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+<style>
+  /* geometry read off the Figma frame (1528 wide):
+     left column x21 w367 · right column x409 w1098 · content top 94.5
+     media blocks 1098x617.6 (16:9), 21px gaps, 24px radius */
+  :root{
+    --ink:#161616;
+    --mute:#8a8a8a;
+    --paper:#FBFBFB;
+    --line:rgba(22,22,22,.14);
+    --chip:#ededed;
+    --serif:"Gelasio",Georgia,serif;
+    --sans:"Inter","Helvetica Now Display",Arial,sans-serif;
+    --ease:cubic-bezier(.16,1,.3,1);
+    --pad:1.37vw;
+    --left:21.62vw;
+    --gap:1.37vw;
+    --top:94px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  html,body{background:var(--paper)}
+  body{font-family:var(--sans);color:var(--ink);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+  a{color:inherit;text-decoration:none}
+  img,video{display:block;max-width:100%}
+  ol,ul{list-style:none}
+
+  /* ================= OSMO-STYLE FLOATING PILL HEADER ================= */
+  .onav{
+    position:fixed;inset:0 0 auto 0;z-index:120;
+    display:flex;justify-content:center;align-items:flex-start;
+    padding:16px;
+    pointer-events:none;
+  }
+
+  /* ONE cohesive box: bg + border + constant 12px radius live here,
+     overflow:hidden clips the content that grows inside it */
+  .onav__bar{
+    pointer-events:auto;
+    position:relative;
+    width:min(540px,100%);
+    background:#201d1d;
+    border:1px solid rgba(244,244,244,.09);
+    border-radius:4px;
+    overflow:hidden;
+    color:#f4f4f4;
+    will-change:width;
+    /* CLOSING: width shrinks only AFTER the panel has collapsed */
+    transition:width .5s cubic-bezier(.625,.05,0,1) .4s;
+  }
+  html.onav-open .onav__bar{
+    width:min(1240px,100%);
+    /* OPENING: width expands first, no delay */
+    transition:width .5s cubic-bezier(.625,.05,0,1) 0s;
+  }
+
+  .onav__row{
+    position:relative;z-index:3;
+    display:flex;align-items:center;
+    height:44px;
+    padding:4px;
+  }
+
+  /* clip is IN FLOW so the single bar box grows with it; the panel inside
+     is position:absolute (laid out once) so nothing reflows per frame */
+  .onav__clip{
+    position:relative;
+    height:0;
+    overflow:hidden;
+    /* CLOSING: collapse right away */
+    transition:height .42s cubic-bezier(.4,0,.2,1) 0s;
+  }
+  html.onav-open .onav__clip{
+    height:var(--panel-h,0px);
+    /* OPENING: wait for the width, then glide down */
+    transition:height .52s cubic-bezier(.4,0,.2,1) .4s;
+  }
+  .onav.is-measuring .onav__bar{width:min(1240px,100%)!important;transition:none!important}
+  .onav.is-measuring .onav__clip{height:auto!important;transition:none!important}
+  /* height:auto here too — otherwise each re-measure reads the panel's
+     OWN previous --panel-h result instead of its true content height,
+     and the value runs away upward across repeated measurePanel() calls
+     (load, fonts.ready, resize all call it). */
+  .onav.is-measuring .onav__panel{position:relative!important;height:auto!important}
+
+  /* menu toggle */
+  /* menu = one button: icon + label, grey fill on hover */
+  .onav__menu{
+    display:inline-flex;align-items:center;gap:0;
+    height:36px;padding:0 8px 0 2px;
+    border:0;background:transparent;cursor:pointer;
+    color:#f4f4f4;font:500 13px/1 var(--sans);letter-spacing:0;
+    border-radius:4px;
+    transition:background .25s ease;
+  }
+  .onav__menu-roll{transform:translateY(1.5px)}   /* optical centering nudge */
+  .onav__menu:hover .onav__btn-roll span{transform:translateY(-100%)}
+  .onav__menu:hover{background:rgba(244,244,244,.1)}
+  /* menu icon: animate-ui "Menu" — 3 lines -> X (spring, right-end pivots) */
+  .onav__burger{
+    position:relative;flex:none;
+    width:26px;height:36px;
+    display:grid;place-items:center;
+  }
+  .onav__menuicon{width:22px;height:22px;color:#f4f4f4;display:block}
+  .onav__menuicon line{
+    stroke:currentColor;stroke-width:2;stroke-linecap:round;
+    transform-box:fill-box;
+    transition:transform .5s cubic-bezier(.34,1.4,.5,1),opacity .2s ease-in-out;
+  }
+  .onav__menuicon .l1{transform-origin:right top}
+  .onav__menuicon .l3{transform-origin:right bottom}
+  html.onav-open .onav__menuicon .l1{transform:translate(-2.35px,.35px) rotate(-45deg)}
+  html.onav-open .onav__menuicon .l2{opacity:0}
+  html.onav-open .onav__menuicon .l3{transform:translate(-2.35px,-.35px) rotate(45deg)}
+
+  /* centered logo */
+  .onav__logo{
+    position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+    display:flex;align-items:center;justify-content:center;
+    height:40px;overflow:hidden;              /* container inside the 44px header */
+    color:#f4f4f4;
+  }
+  .onav__logo svg{height:26px;width:auto;display:block}
+  .onav__logo img{height:52px;width:auto;display:block}   /* the animation itself, larger, clipped by the container */
+
+  /* right actions */
+  .onav__actions{margin-left:auto;display:flex;align-items:center;gap:0}
+  .onav__btn{
+    position:relative;overflow:hidden;
+    display:inline-flex;align-items:center;justify-content:center;
+    height:36px;padding:0 20px;
+    border:0;cursor:pointer;
+    font:500 12px/1 var(--sans);letter-spacing:-.01em;
+    text-decoration:none;
+  }
+  .onav__btn.is-login{background:#fa7005;color:#fff;border-radius:100px}
+  .onav__btn.is-join{background:#4f4c4c;color:#fff;border-radius:2px;font-weight:500}
+  /* language switcher — square, dropdown on hover */
+  .onav__lang{display:inline-flex;margin-left:0}
+  .onav__lang-sq{
+    width:36px;height:36px;flex:none;
+    display:inline-flex;align-items:center;justify-content:center;
+    border:0;cursor:pointer;
+    background:#353232;color:#f4f4f4;
+    font:500 11px/1 var(--sans);letter-spacing:.03em;
+    border-radius:2px;
+    transition:background .25s ease,border-radius .2s ease;
+  }
+  .onav__lang-sq:hover{background:#4a4848}
+  /* open: square corners at the bottom so the panel reads as one piece */
+  .onav__lang-sq.is-open{background:#4a4848;border-radius:2px 2px 0 0}
+  /* fixed so the header bar's overflow:hidden can't clip it;
+     width + position are set from the square in JS, flush underneath it */
+  .onav__langmenu{
+    position:fixed;z-index:200;
+    padding:0;border:0;
+    border-radius:0 0 2px 2px;
+    overflow:hidden;
+    display:flex;flex-direction:column;
+    opacity:0;pointer-events:none;
+    box-shadow:0 16px 34px -14px rgba(0,0,0,.5);
+  }
+  .onav__langmenu.is-open{pointer-events:auto}
+  .onav__langmenu button{
+    width:100%;height:36px;padding:0;
+    display:flex;align-items:center;justify-content:center;
+    border:0;cursor:pointer;
+    background:#353232;color:rgba(244,244,244,.6);
+    font:500 11px/1 var(--sans);letter-spacing:.03em;
+    border-radius:0;
+    transition:background .2s ease,color .2s ease;
+  }
+  /* dropdown items keep their colour on hover — only the label rolls */
+
+  /* vertical roll, same mechanic as the header buttons */
+  .onav__lang-roll{position:relative;display:block;overflow:hidden;height:1.15em;width:100%}
+  .onav__lang-roll span{
+    display:flex;align-items:center;justify-content:center;
+    height:1.15em;line-height:1;
+    transition:transform .4s cubic-bezier(.16,1,.3,1);
+  }
+  .onav__lang-roll span + span{position:absolute;left:0;top:100%;width:100%}
+  .onav__lang-sq:hover .onav__lang-roll span,
+  .onav__langmenu button:hover .onav__lang-roll span{transform:translateY(-100%)}
+
+  .onav__btn-roll{position:relative;display:block;overflow:hidden;height:1.15em}
+  .onav__btn-roll span{
+    display:flex;align-items:center;justify-content:center;
+    height:1.15em;line-height:1;
+    transition:transform .4s cubic-bezier(.16,1,.3,1);
+  }
+  .onav__btn-roll span + span{position:absolute;left:0;top:100%;width:100%}
+  .onav__btn:hover .onav__btn-roll span{transform:translateY(-100%)}
+
+  /* panel pinned to the top of the clip, laid out once; the clip's
+     growing height reveals it top -> down */
+  .onav__panel{
+    position:absolute;left:0;right:0;top:0;
+    /* the +100px added to --panel-h (JS) only grows the CLIP; without
+       this the panel's own box stayed content-height, leaving 100px of
+       dead space below it that nothing could stretch into. Must be
+       `height`, not `min-height` — min-height isn't a "definite size"
+       for grid's row-stretch math, so align-content:stretch silently
+       no-ops against it and every column keeps sizing to its own
+       content instead of filling the row. */
+    height:var(--panel-h,auto);
+    padding:22px 20px 24px;
+    display:grid;grid-template-columns:1fr 1fr 1.15fr;gap:24px;
+    /* single implicit row didn't fill the min-height on its own — each
+       column just sized to its own content, leaving them all different
+       heights. This makes the row itself (and so every column) stretch
+       to the panel's full measured height. */
+    align-content:stretch;align-items:stretch;
+    border-top:1px solid #312e2e;   /* the one divider between row and panel */
+  }
+  .onav__col{display:flex;flex-direction:column}
+  /* left nav column gets the same panel fill as the showreel card */
+  .onav__panel > .onav__col:first-child{
+    background:#2a2626;border-radius:10px;padding:12px;
+  }
+  .onav__panel > .onav__col:nth-child(2){padding:12px}
+  .onav__col ul{list-style:none;display:flex;flex-direction:column}
+  .onav__col li{border-bottom:1px solid rgba(244,244,244,.09)}
+  .onav__col li:last-child{border-bottom:0}
+  .onav__col-label{
+    font:400 14px/1 "Inter",var(--sans);color:rgba(244,244,244,.45);
+    margin-bottom:10px;
+  }
+  .onav__col a{
+    display:flex;align-items:center;gap:8px;
+    padding:8px 0;
+    color:#f4f4f4;font:400 18px/1.1 var(--sans);letter-spacing:-.02em;text-decoration:none;
+    opacity:.9;transition:opacity .2s ease;
+  }
+  .onav__col a:hover{opacity:1}
+  /* same roll mechanic as the header buttons, not a position shift */
+  .onav__col-roll{position:relative;display:block;overflow:hidden;height:1.1em}
+  .onav__col-roll span{
+    display:block;height:1.1em;line-height:1.1;
+    transition:transform .4s cubic-bezier(.16,1,.3,1);
+  }
+  .onav__col-roll span + span{position:absolute;left:0;top:100%;width:100%}
+  .onav__col a:hover .onav__col-roll span{transform:translateY(-100%)}
+  .onav__num{font-size:11px;opacity:.4;transform:translateY(-4px)}
+  .onav__pill-tag{
+    font:600 9px/1 var(--sans);letter-spacing:.1em;text-transform:uppercase;
+    background:var(--blue);color:var(--ink);
+    padding:3px 6px;border-radius:3px;
+  }
+  .onav__pill-tag--muted{background:#4a4646;color:rgba(244,244,244,.75)}
+  .onav__col-locked{
+    display:flex;align-items:center;gap:8px;
+    padding:8px 0;
+    color:rgba(244,244,244,.45);font:400 18px/1.1 var(--sans);letter-spacing:-.02em;
+  }
+  .onav__socials{display:flex;gap:0;margin-top:auto}
+  .onav__socials a{
+    width:44px;height:44px;flex:none;display:grid;place-items:center;
+    background:#312e2e;color:#f4f4f4;
+    transition:background .2s ease;
+  }
+  /* alternating roundness, same square size as the language switcher */
+  .onav__socials a:nth-child(1),
+  .onav__socials a:nth-child(3){border-radius:100px}
+  .onav__socials a:nth-child(2),
+  .onav__socials a:nth-child(4){border-radius:4px}
+  .onav__socials a:hover{background:#fa7005}
+  .onav__socials svg{width:20px;height:20px;display:block}
+
+  .onav__card{
+    position:relative;
+    background:#2a2626;border-radius:10px;padding:8px;
+    display:flex;flex-direction:column;
+    text-decoration:none;color:inherit;cursor:pointer;
+    transition:background .25s ease;
+  }
+  .onav__card:hover{background:#332f2f}
+  /* two stacked year chips, overlapping */
+  .onav__card-years{
+    position:absolute;top:26px;left:50%;transform:translateX(-50%);
+    z-index:2;display:flex;
+  }
+  .onav__card-year{
+    padding:4px 10px;
+    font:600 11px/1 var(--sans);letter-spacing:.01em;color:#fff;
+  }
+  .onav__card-year--a{background:#fa7005;border-radius:2px;position:relative;z-index:2}
+  .onav__card-year--b{background:#151515;border-radius:100px;margin-left:0;z-index:1}
+  .onav__card-top{
+    flex:1;
+    display:flex;align-items:center;justify-content:center;
+    padding:4px 0;
+  }
+  .onav__card-title{
+    font:400 32px/1.1 "Inter",var(--sans);
+    letter-spacing:-.01em;text-align:center;
+  }
+  .onav__card-thumb{
+    /* fixed, NOT flex:1 — the card itself keeps stretching to the full
+       column height (grid stretch), this just caps the video's own
+       height so it stops eating that whole space */
+    flex:none;height:160px;border-radius:8px;margin-top:auto;
+    background:radial-gradient(120% 120% at 30% 20%,#7195ff,#3a3f6b 70%,#232436);
+    overflow:hidden;position:relative;
+  }
+  .onav__card-thumb video{
+    position:absolute;inset:0;width:100%;height:100%;
+    object-fit:cover;display:block;
+    transition:transform .5s var(--ease);
+  }
+  .onav__card:hover .onav__card-thumb video{transform:scale(1.05)}
+
+  .onav__scrim{
+    position:fixed;inset:0;z-index:119;
+    background:rgba(21,21,21,.4);
+    opacity:0;pointer-events:none;transition:opacity .4s ease;
+  }
+  html.onav-open .onav__scrim{opacity:1;pointer-events:auto}
+
+  @media (max-width:760px){
+    .onav__panel{grid-template-columns:1fr;gap:16px;padding:18px 20px 20px}
+    .onav__card{order:1}
+
+    /* open menu goes edge to edge. The 16px the wrapper gives up is handed
+       straight back to the row's own padding, so the toggle button lands on
+       exactly the same pixel whether the menu is open or shut — otherwise it
+       jumps left by a gutter's width the moment you tap it. The measuring
+       pass gets the same treatment so --panel-h is read at the width the
+       panel is actually rendered at. */
+    html.onav-open .onav,
+    .onav.is-measuring{padding:0}
+    html.onav-open .onav__bar,
+    .onav.is-measuring .onav__bar{
+      width:100%;
+      border-radius:0;border-left:0;border-right:0;border-top:0;
+      /* the wrapper's top gutter would otherwise leave a strip of the page
+         showing above a menu that is meant to own the whole screen; the bar
+         takes that space back inside itself so the row stays put */
+      padding-top:17px;
+    }
+    /* 16px wrapper gutter + the 1px side border that goes with it */
+    html.onav-open .onav__row,
+    .onav.is-measuring .onav__row{padding-left:21px;padding-right:21px}
+    .onav__logo svg{height:22px}
+    .onav__clip{overflow-y:auto}
+  }
+
+  @media (max-width:520px){
+    .onav__menu .onav__btn-roll{display:none}
+    .onav__btn.is-login{display:none}
+    /* the 8px/2px split was there to sit the icon next to the "Menu"
+       label; with the label gone it just parks the icon off-centre */
+    .onav__menu{padding:0;justify-content:center;width:36px}
+  }
+
+  /* the wordmark is pinned to the same top-left corner the header bar
+     occupies, so on a phone the two always sit on top of each other */
+  @media (max-width:720px){
+    .brand{display:none}
+  }
+
+
+  /* ---------- case hero: solid fill, same colour as the preloader, full screen ---------- */
+  .caseHero{
+    position:relative;overflow:hidden;
+    height:100vh;
+    display:flex;flex-direction:column;align-items:center;
+    background:var(--ink);
+    padding:calc(var(--top) - 4px) 24px 40px;
+    text-align:center;color:#fff;
+  }
+  .caseHero__inner{max-width:640px;margin:0 auto}
+  /* full width, natural per-image height (no forced ratio, no
+     object-fit) — each image hangs off its own TOP edge (top of the
+     screenshot stays visible), whatever spills past the bottom gets
+     cropped by .caseHero's own overflow:hidden. Width never gets
+     touched, so nothing is ever cropped side-to-side. */
+  .caseHero__shots{
+    position:relative;flex:1;width:100%;max-width:990px;
+    margin-top:90px;
+  }
+  .caseHero__shots img{
+    position:absolute;left:50%;top:0;transform:translateX(-50%);
+    width:103%;max-width:990px;height:auto;
+    box-shadow:0 30px 70px -20px rgba(0,0,0,.55);
+    opacity:0;
+    animation:caseHeroFade 15s ease-in-out infinite;
+  }
+  .caseHero__shots img:nth-child(1){animation-delay:0s}
+  .caseHero__shots img:nth-child(2){animation-delay:5s}
+  .caseHero__shots img:nth-child(3){animation-delay:10s}
+  /* fade windows overlap across the 1/3 slot boundaries on purpose —
+     otherwise there's a gap where nothing is visible between images */
+  @keyframes caseHeroFade{
+    0%{opacity:0}
+    8%{opacity:1}
+    33%{opacity:1}
+    41%{opacity:0}
+    100%{opacity:0}
+  }
+  @media (prefers-reduced-motion:reduce){
+    .caseHero__shots img{animation:none;opacity:0}
+    .caseHero__shots img:first-child{opacity:1}
+  }
+  .caseHero__annot{
+    position:absolute;right:6%;top:0;z-index:3;
+    width:clamp(110px,12vw,160px);height:auto;pointer-events:none;
+    transform:translate(-200px,150px) rotate(15deg);
+  }
+  @media (max-width:760px){ .caseHero__annot{display:none} }
+  .caseHero__title{
+    font-family:var(--serif);font-weight:400;
+    font-size:clamp(32px,4.2vw,46px);letter-spacing:-.02em;margin-bottom:10px;
+  }
+  .caseHero__meta{font:500 13px/1 var(--sans);letter-spacing:.02em;opacity:.85;margin-bottom:6px}
+  .caseHero__tags{display:flex;flex-wrap:wrap;justify-content:center;gap:4px;margin-bottom:26px}
+  .caseHero__tags span{
+    height:23px;padding:0 7px 1px;border-radius:5px;
+    display:inline-flex;align-items:center;justify-content:center;
+    background:var(--chip);
+    font:400 13px/1 var(--sans);color:var(--ink);
+  }
+  .caseHero__behance{
+    display:inline-block;color:#fff;text-decoration:none;
+    font:400 15px/1.65 var(--sans);opacity:.95;
+  }
+  .caseHero__behance-roll{position:relative;display:block;overflow:hidden;height:1.65em}
+  .caseHero__behance-roll span{display:block;transition:transform .4s cubic-bezier(.16,1,.3,1)}
+  .caseHero__behance-roll span + span{position:absolute;left:0;top:100%}
+  .caseHero__behance:hover .caseHero__behance-roll span{transform:translateY(-100%)}
+
+  /* fake roaming cursor, ported from about-me.html's hero — same
+     mechanic (drift between stops, typewrite a short line), text
+     swapped for Monte-relevant lines */
+  .lx-cursor{
+    position:absolute;left:0;top:0;z-index:6;
+    width:0;height:0;pointer-events:none;
+    will-change:transform,opacity;
+  }
+  .lx-cursor__ico{position:absolute;left:0;top:0;width:24px;height:24px;display:block}
+  .lx-cursor__ico[hidden]{display:none}
+  .lx-cursor__ico svg{display:block;width:100%;height:100%;overflow:visible}
+  .lx-cursor__label{
+    position:absolute;left:20px;top:19px;
+    display:flex;align-items:center;gap:5px;
+    height:25px;padding:0 9px 0 6px;border-radius:999px;
+    background:#fff;color:var(--ink);
+    font:500 11px/1 var(--sans);letter-spacing:-.005em;white-space:nowrap;
+    box-shadow:0 10px 24px -10px rgba(0,0,0,.5);
+  }
+  .lx-cursor__text{display:block;white-space:nowrap}
+  .lx-cursor__text .caret{
+    display:inline-block;width:1px;height:11px;margin-left:1.5px;
+    background:currentColor;vertical-align:-1px;
+    animation:lxCaret .75s step-end infinite;
+  }
+  @keyframes lxCaret{50%{opacity:0}}
+  @media (prefers-reduced-motion:reduce){ .lx-cursor{display:none} }
+
+  /* ---------- two columns ---------- */
+  .proj{display:flex;align-items:flex-start;gap:var(--gap);padding:0 var(--pad);margin-top:96px}
+
+  .proj__left{
+    position:sticky;top:0;
+    flex:0 0 var(--left);width:var(--left);
+    height:100vh;
+    display:flex;flex-direction:column;justify-content:space-between;
+    padding:44px 0 21px;
+  }
+  .proj__title{
+    font-family:var(--serif);font-weight:500;
+    font-size:25px;line-height:31px;letter-spacing:-.01em;
+  }
+
+  /* tags are grey pills, 23px tall */
+  .proj__tags{display:flex;flex-wrap:wrap;gap:4px;margin-top:13px}
+  .proj__tags span{
+    height:23px;padding:0 7px 1px;border-radius:5px;
+    display:inline-flex;align-items:center;justify-content:center;
+    background:var(--chip);
+    font:400 13px/1 var(--sans);color:var(--ink);
+  }
+
+  /* one chapter open, the rest are rows split by hairlines */
+  .toc{margin-top:34px}
+  .toc li{border-bottom:1px solid var(--line)}
+  .toc li:last-child{border-bottom:0}
+  .toc__t{
+    display:flex;align-items:center;
+    padding:9px 0 7px;
+    font:400 17px/21px var(--sans);color:var(--ink);
+  }
+  /* marker dot: pink on the open chapter, grey on hover — a real SVG
+     circle (not a ::after box) so it rasterises as an actual round
+     path instead of a border-radius box, which looked slightly uneven
+     at this size. Normal flex item right after the text, NOT
+     absolutely positioned — see the git history for why. */
+  .toc__dot{flex:none;width:5px;height:5px;margin-left:8px;display:block;opacity:0;transition:opacity .3s var(--ease)}
+  .toc__t:hover .toc__dot{opacity:1}
+  .toc li.is-active .toc__t .toc__dot{opacity:1}
+  /* two separate circles, swapped by opacity — not one circle's fill
+     animated — so grey/orange are two fixed icons, not a transition */
+  .toc__dot-off{fill:#B4B4B4}
+  .toc__dot-on{fill:#fa7005;opacity:0}
+  .toc li.is-active .toc__t .toc__dot-off{opacity:0}
+  .toc li.is-active .toc__t .toc__dot-on{opacity:1}
+  .toc__b{
+    display:grid;grid-template-rows:0fr;padding-bottom:0;opacity:0;
+    transition:grid-template-rows .55s var(--ease),padding-bottom .55s var(--ease),opacity .4s var(--ease);
+  }
+  .toc li.is-active .toc__b{grid-template-rows:1fr;padding-bottom:11px;opacity:1}
+  .toc__b > div{overflow:hidden;min-height:0}
+  .toc__b p{font:400 13px/16.3px var(--sans);color:var(--mute)}
+  .toc__b p + p{margin-top:16px}
+
+  /* next case: the site's own .samen__btn pill component — cursor-fill
+     hover, dark pill, rolling label — no separate icon-square segment,
+     just an icon on each side of the label inside the one pill */
+  .proj__next{padding-top:24px}
+  .samen__btn{
+    display:inline-flex;align-items:stretch;
+    height:44px;
+    font:500 1rem/1 var(--sans);
+    text-decoration:none;
+  }
+  .samen__btn-main{
+    position:relative;overflow:hidden;
+    display:flex;align-items:center;
+    padding:0 20px;
+    border-radius:4px;
+    background:var(--ink);
+    color:#fff;
+  }
+  .samen__btn-circle{
+    position:absolute;
+    top:var(--my,50%);left:var(--mx,50%);
+    width:620px;height:620px;
+    margin:-310px 0 0 -310px;
+    background:#fa7005;border-radius:50%;
+    transform:scale(0);
+    transition:transform 1.1s cubic-bezier(.5,0,.15,1);
+    pointer-events:none;
+  }
+  .samen__btn:hover .samen__btn-circle,
+  .samen__btn.is-hover .samen__btn-circle{transform:scale(1)}
+  .samen__btn-text{position:relative;z-index:2;white-space:nowrap}
+  .samen__btn-roll{position:relative;display:block;overflow:hidden;height:1.05em}
+  .samen__btn-roll span{display:block;transition:transform .4s cubic-bezier(.16,1,.3,1)}
+  .samen__btn-roll span + span{position:absolute;left:0;top:100%}
+  .samen__btn:hover .samen__btn-roll span,
+  .samen__btn.is-hover .samen__btn-roll span{transform:translateY(-100%)}
+  .nextcase__icoL,.nextcase__icoR{
+    position:relative;z-index:2;flex:none;display:grid;place-items:center;
+  }
+  .nextcase__icoL{width:18px;height:18px;margin-right:12px}
+  .nextcase__icoL img{width:100%;height:100%;display:block}
+  .nextcase__icoR{margin-left:8px}
+  .nextcase__icoR svg{width:16px;height:16px;display:block}
+
+  /* ---------- media column ---------- */
+  .proj__media{flex:1 1 auto;min-width:0;padding-top:var(--top);padding-bottom:10vh}
+  .block{scroll-margin-top:var(--top)}
+  .shot{position:relative;background:#ededed;border-radius:12px;overflow:hidden;aspect-ratio:1098/618}
+  /* this one image is much wider/shorter than the standard placeholder
+     ratio, so cover was cropping its sides — match the box to the
+     image's own ratio instead so the full frame shows */
+  .shot:has(> img[src="webcollage2.jpg"]){aspect-ratio:3664/1312}
+  .shot:has(> img[src="webcollage3.jpg"]){aspect-ratio:3840/5644}
+  .shot:has(> img[src="webcollage4.jpg"]){aspect-ratio:3840/9608}
+  .shot:has(> img[src="webcollage6.jpg"]){aspect-ratio:3840/2958}
+  /* sub-pixel rounding of % width/height against an aspect-ratio box
+     left a 1px sliver of the container's edge showing (a thin black
+     line, bottom+right) on both img and video — overscan slightly so
+     the media always overshoots the box instead of rounding short */
+  .shot img,
+  .shot video{
+    position:absolute;inset:-1px;width:calc(100% + 2px);height:calc(100% + 2px);
+    object-fit:cover;
+  }
+  .shot img{cursor:zoom-in}
+  .block > * + *{margin-top:21px}
+  .block + .block{margin-top:21px}
+  /* same 64px "into/out of an image" rhythm used inside a block, applied
+     across block boundaries too: previous block ends in media, or next
+     block starts with media — either way it's still "text <-> image" */
+  .block:has(> .shot:last-child) + .block,
+  .block:has(> .pair:last-child) + .block,
+  .block:has(> .caro:last-child) + .block,
+  .block:has(> .tp-grid:last-child) + .block,
+  .block + .block:has(> .shot:first-child),
+  .block + .block:has(> .pair:first-child),
+  .block + .block:has(> .caro:first-child),
+  .block + .block:has(> .tp-grid:first-child){margin-top:64px!important}
+  .pair{display:grid;grid-template-columns:1fr 1fr;gap:17px}
+  .pair .shot{aspect-ratio:540/676}
+
+  /* image carousel: nav overlaid on the image itself.
+     buttons: Figma node 2245-135390 (Slider-Button) — 40px grey circle,
+     chevron icon, fa7005 on hover matching the rest of the site.
+     dots: neutral grey pills, active one elongates. */
+  .caro{position:relative}
+  /* crossfade, not a sliding track — a translateX track needs a definite
+     row width and was clipping/overlapping the text column beside it */
+  .caro__track{
+    position:relative;overflow:hidden;border-radius:12px;aspect-ratio:1098/618;
+    background:#F6F6F6;
+  }
+  /* the page-rhythm rule `.shot + *{margin-top:64px}` leaks in here,
+     because every slide also carries class "shot" — that pushed slides
+     2..n down by 64px while slide 1 (no .shot sibling before it) stayed
+     put. Kill margins for everything inside the track. */
+  .caro .caro__track > *{margin:0}
+  .caro__track .caro__slide{
+    position:absolute;inset:0;opacity:0;border-radius:0;background:none;
+    cursor:zoom-in;
+    transition:opacity .5s var(--ease);
+  }
+  .caro__track .caro__slide.is-active{opacity:1}
+
+  .caro__lightbox{
+    position:fixed;inset:0;z-index:1000;
+    display:flex;align-items:flex-start;justify-content:center;
+    overflow-y:auto;padding:88px 24px 40px;
+    background:rgba(0,0,0,.9);
+    opacity:0;pointer-events:none;
+    transition:opacity .3s var(--ease);
+  }
+  .caro__lightbox.is-open{opacity:1;pointer-events:auto}
+  /* fixed width regardless of orientation — a wide image sits fully
+     on screen, a tall one just runs long and the lightbox itself
+     scrolls (overflow-y above) so every part of it stays reachable */
+  .caro__lightbox img{width:min(90vw,1400px);height:auto;display:block;margin:0 auto}
+  .caro__lightbox-close{
+    position:fixed;top:24px;right:24px;z-index:1001;
+    width:48px;height:48px;border-radius:100px;border:none;
+    background:#fff;color:#111;box-shadow:0 4px 16px rgba(0,0,0,.35);
+    display:flex;align-items:center;justify-content:center;cursor:pointer;
+    transition:transform .2s var(--ease),background .2s var(--ease);
+  }
+  .caro__lightbox-close:hover{transform:scale(1.08);background:#f0f0f0}
+  .caro__lightbox-close svg{width:20px;height:20px}
+  /* the image itself is also a nav control: left half = prev, right
+     half = next (Framer "Carousel Component" click logic).
+     cursor = just the chevron icon, no circle/fill behind it. */
+  .caro__zone{position:absolute;top:0;bottom:0;width:50%;z-index:1}
+  .caro__zone--prev{
+    left:0;
+    cursor:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Cpath d='M19 8l-8 8 8 8' stroke='%234a4a4a' stroke-width='1.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") 16 16, pointer;
+  }
+  .caro__zone--next{
+    right:0;
+    cursor:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Cpath d='M13 8l8 8-8 8' stroke='%234a4a4a' stroke-width='1.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") 16 16, pointer;
+  }
+
+  /* dark gradient behind the pagination thumbnails so they stay legible
+     over any image — pagination sits in a layer above it */
+  .caro__shade{
+    position:absolute;left:0;right:0;bottom:0;height:110px;z-index:2;
+    background:linear-gradient(to top, rgba(0,0,0,.55), rgba(0,0,0,0));
+    pointer-events:none;
+  }
+  .caro__hint{
+    position:absolute;left:50%;top:14px;transform:translateX(-50%);z-index:3;
+    text-align:center;pointer-events:none;
+    padding:6px 12px;border-radius:100px;
+    background:rgba(0,0,0,.28);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+    font:500 12px/1.4 var(--sans);color:rgba(255,255,255,.9);
+  }
+  /* pagination as mini image thumbnails (Framer "Crisp Slider" style),
+     not plain dots — each one previews its own slide. */
+  .caro__dots{
+    position:absolute;left:50%;bottom:20px;transform:translateX(-50%);z-index:3;
+    display:flex;align-items:center;gap:8px;
+  }
+  .caro__dot{
+    width:48px;height:32px;border-radius:6px;overflow:hidden;
+    padding:0;border:none;background:none;
+    opacity:.55;cursor:pointer;
+    transition:opacity .25s var(--ease),transform .25s var(--ease);
+  }
+  .caro__dot:hover{transform:translateY(-4px)}
+  .caro__dot img{width:100%;height:100%;object-fit:cover;display:block}
+  .caro__dot.is-active{opacity:1}
+
+  /* full case-study copy in the right column, not just images — capped
+     to a real reading width (Figma: 655 of a 1135 media column, ~58%,
+     used as a % here so it tracks the actual column width instead of a
+     guessed fixed px). Block itself centred in the media column
+     (margin:auto) AND its own text centred (text-align:center). */
+  .block__eyebrow,.block__h,.block__sub,.block__text,.block__list,.block__tasks,.block__callout,.block__faq,.meta{
+    max-width:58%;
+    text-align:left;margin-left:auto;margin-right:auto;
+  }
+  .block__eyebrow{font:500 13px/1 var(--sans);color:var(--mute)}
+  .block__h{
+    font-family:var(--serif);font-weight:500;
+    font-size:clamp(20px,1.9vw,24px);line-height:1.25;letter-spacing:-.01em;color:var(--ink);
+  }
+  .block__sub{
+    font:500 14px/1.3 var(--sans);color:var(--ink);
+    margin-top:26px!important;
+  }
+  .block__text{font:500 14px/1.65 var(--sans);color:rgba(22,22,22,.75)}
+  .block__list{list-style:none;padding:0}
+  .block__list li{
+    position:relative;padding-left:16px;
+    font:500 14px/1.6 var(--sans);color:rgba(22,22,22,.75);
+    text-align:left;
+  }
+  .block__list li + li{margin-top:8px}
+  .block__list li::before{content:"•";position:absolute;left:0;color:var(--mute)}
+
+  /* "My tasks" numbered card — same body-text size/weight as .block__list
+     (14px/500), just laid out with a number badge instead of a dot */
+  .block__tasks{
+    list-style:none;padding:24px;margin-left:auto;margin-right:auto;
+    background:#F6F6F6;border-radius:24px;
+  }
+  .block__tasks li{display:flex;align-items:center;gap:16px;text-align:left}
+  .block__tasks li + li{margin-top:20px}
+  .block__tasks-num{
+    flex:none;width:24px;height:24px;border-radius:50%;
+    background:var(--ink);color:#fff;
+    display:flex;align-items:center;justify-content:center;line-height:1;
+    font:500 12px/1 var(--sans);
+  }
+  .block__tasks li span:last-child{font:500 14px/1.6 var(--sans);color:rgba(22,22,22,.75)}
+
+  /* callout card (Figma 223-3003) — lightbulb insight box inside the
+     copy column, same light-grey fill as .block__tasks */
+  .block__callout{
+    padding:24px;margin-left:auto;margin-right:auto;
+    background:#F6F6F6;border-radius:12px;
+  }
+  .block__callout-icon{font-size:20px;line-height:1}
+  .block__callout-title{
+    margin-top:16px;font:500 14px/1.3 var(--sans);color:var(--ink);
+  }
+  .block__callout-text{
+    margin-top:10px;font:500 14px/1.65 var(--sans);color:rgba(22,22,22,.75);
+  }
+
+  /* hypotheses FAQ accordion (Figma 194-740) — height driven by GSAP
+     (see script at the bottom), "+" -> "x" via an SVG icon that rotates */
+  .block__faq{list-style:none;padding:0}
+  .block__faq-item{border-bottom:1px solid var(--line)}
+  .block__faq-item:last-child{border-bottom:none}
+  .block__faq-t{
+    display:flex;align-items:center;justify-content:space-between;gap:16px;
+    width:100%;padding:14px 0;background:none;border:none;cursor:pointer;text-align:left;
+    font:500 16px/1.3 var(--sans);color:var(--ink);
+  }
+  /* same roll mechanic as the header/button labels site-wide */
+  .block__faq-roll{position:relative;display:block;overflow:hidden;height:1.3em;flex:1 1 auto}
+  .block__faq-roll span{display:block;transition:transform .4s cubic-bezier(.16,1,.3,1)}
+  .block__faq-roll span + span{position:absolute;left:0;top:100%}
+  .block__faq-t:hover .block__faq-roll span{transform:translateY(-100%)}
+  .block__faq-icon{
+    flex:none;width:24px;height:24px;border-radius:50%;
+    background:var(--ink);color:#fff;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .block__faq-icon svg{width:12px;height:12px;display:block}
+  .block__faq-b{height:0;overflow:hidden}
+  .block__faq-b p{padding-bottom:16px;font:500 14px/1.6 var(--sans);color:rgba(22,22,22,.75)}
+
+  /* 6-card grid (Figma 194-404) — full column width, not capped to the
+     58% text column like the copy above it. Each card: photo + overlaid
+     "Read more" button (site's real .samen__btn, cloned as a pill
+     variant: max roundness, white base instead of ink) + title. */
+  .tp-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  .tp-card{
+    position:relative;display:block;text-decoration:none;
+    border-radius:24px;overflow:hidden;aspect-ratio:710/420;background:#ededed;
+  }
+  .tp-card img,
+  .tp-card video{
+    position:absolute;inset:-1px;width:calc(100% + 2px);height:calc(100% + 2px);
+    object-fit:cover;
+  }
+  .tp-card::after{
+    content:"";position:absolute;inset:0;z-index:1;
+    background:linear-gradient(to top, rgba(0,0,0,.6), rgba(0,0,0,0) 55%);
+  }
+  .tp-card__overlay{position:absolute;left:24px;right:24px;bottom:24px;z-index:2}
+  .tp-card__title{
+    margin-top:10px;font:500 22px/1.25 var(--serif);color:#fff;letter-spacing:-.01em;
+  }
+  /* pill variant: smaller, no cursor-fill circle — just a flat
+     white -> ink swap on hover */
+  .samen__btn--pill{height:32px}
+  .samen__btn--pill .samen__btn-main{
+    border-radius:999px;background:#fff;color:var(--ink);padding:0 14px;
+    transition:background-color .25s var(--ease),color .25s var(--ease);
+  }
+  .samen__btn--pill .samen__btn-circle{display:none}
+  .samen__btn--pill .samen__btn-text{font-size:12px}
+  .samen__btn--pill:hover .samen__btn-main,
+  .samen__btn--pill.is-hover .samen__btn-main{background:#161616!important;color:#fff!important}
+
+  /* explicit rhythm, overriding the generic 21px .block gap:
+     eyebrow -> heading 8px, heading -> body 24px, .sub -> list 16px,
+     anything -> an image (shot/pair) 32px, out of an image 32px. */
+  .block__eyebrow + .block__h{margin-top:8px!important}
+  .block__h + .block__text, .block__h + .block__list, .block__h + .block__sub{margin-top:24px!important}
+  .block__sub + .block__text, .block__sub + .block__list, .block__sub + .block__tasks{margin-top:10px!important}
+  .block__text + .block__text{margin-top:32px}
+  .block__text + .block__callout, .block__callout + .block__text{margin-top:24px!important}
+  .block__text + .block__faq{margin-top:24px!important}
+  .block > * + .shot,
+  .block > * + .pair,
+  .block > * + .caro,
+  .block > * + .tp-grid{margin-top:64px}
+  .shot + *{margin-top:64px}
+  .tp-grid + *{margin-top:64px}
+
+  /* meta grid: Role / Scope / Team / Duration — ported from the Figma
+     "Definition List" in the header section, real Monte values.
+     Same 58% text-column width as the rest of the copy, columns
+     spread edge-to-edge across THAT width. */
+  .meta{
+    display:flex;flex-wrap:wrap;justify-content:space-between;gap:28px;
+    margin-top:24px!important;margin-bottom:32px;
+    padding-top:24px;border-top:1px solid var(--line);
+  }
+  .meta > div{text-align:left}
+  .meta__term{
+    font:500 12px/1 var(--sans);letter-spacing:.02em;text-transform:uppercase;
+    color:var(--mute);margin-bottom:10px;
+  }
+  .meta__desc{font:500 14px/1.4 var(--sans);color:var(--ink)}
+  .meta__desc + .meta__desc{margin-top:4px}
+
+  @media (max-width:900px){
+    :root{--left:auto;--pad:16px;--gap:0px;--top:84px}
+    .proj{flex-direction:column}
+    .proj__left{display:none}
+    .proj__media{padding-top:28px}
+    .shot{border-radius:16px}
+    .pair{grid-template-columns:1fr}
+    .tp-grid{grid-template-columns:1fr}
+    .block__eyebrow,.block__h,.block__sub,.block__text,.block__list,.block__tasks,.block__callout,.block__faq,.meta{
+      max-width:100%;margin-left:0;margin-right:0;
+    }
+  }
+  @media (prefers-reduced-motion:reduce){*{transition-duration:.001s!important}}
+
+  /* ---------- standard site footer, ported from buff-site.html ---------- */
+  .foot{
+    background:#151515;
+    padding:clamp(4rem,10vh,7.5rem) 50px 34px;
+    color:#f2f2f2;
+  }
+  .foot__top{
+    display:grid;grid-template-columns:minmax(0,1fr) minmax(260px,420px);
+    gap:clamp(2rem,6vw,5rem);
+    align-items:start;
+    padding-bottom:clamp(4rem,12vh,9rem);
+  }
+  .foot__title{
+    font-family:var(--serif);font-weight:400;
+    font-size:40px;line-height:1.12;letter-spacing:-.02em;
+    color:#fff;max-width:16ch;
+  }
+  .foot__body{
+    margin-top:14px;max-width:44ch;
+    font:400 16px/1.5 var(--sans);
+    color:#FFFFFF;
+  }
+  .foot__body a{
+    display:inline-block;
+    color:#fff;text-decoration:underline;text-underline-offset:3px;
+    text-decoration-thickness:1px;
+    transform-origin:left center;
+    transition:transform .45s var(--ease);
+  }
+  .foot__body a:hover{transform:scale(1.06) rotate(-2.5deg)}
+  .foot__label{
+    font:400 12px/1 var(--sans);letter-spacing:.04em;
+    color:rgba(242,242,242,.45);margin-bottom:10px;
+  }
+  .foot__contacts{display:flex;flex-direction:column;gap:6px;margin-bottom:38px}
+  .foot__contacts a,.foot__contacts span{
+    font:400 16px/1.4 var(--sans);color:#f2f2f2;text-decoration:none;
+  }
+  .foot__contacts a{
+    align-self:flex-start;
+    transform-origin:left center;
+    transition:transform .45s var(--ease);
+  }
+  .foot__contacts a:hover{transform:scale(1.06) rotate(-2.5deg)}
+  .foot__social{display:flex;flex-wrap:wrap;gap:26px}
+  .foot__social a{
+    font:400 16px/1 var(--sans);color:#f2f2f2;text-decoration:none;
+    transform-origin:left center;
+    transition:transform .45s var(--ease);
+  }
+  .foot__social a:hover{transform:scale(1.06) rotate(-2.5deg)}
+  .foot__bar{
+    display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:16px;
+    padding-top:22px;
+    border-top:1px solid rgba(242,242,242,.1);
+    font:400 13px/1 var(--sans);color:rgba(242,242,242,.45);
+  }
+  .foot__bar a{
+    display:inline-block;color:inherit;text-decoration:none;
+    transform-origin:left center;
+    transition:transform .45s var(--ease);
+  }
+  .foot__bar-right{display:flex;flex-wrap:wrap;gap:26px}
+  .foot__bar a:hover{transform:scale(1.06) rotate(-2.5deg)}
+  @media (max-width:900px){
+    .foot{padding:4rem 20px 28px}
+    .foot__top{grid-template-columns:1fr;gap:2.4rem;padding-bottom:3rem}
+    .foot__title{font-size:32px}
+  }
+  .foot__avatars{
+    display:inline-flex;align-items:center;vertical-align:-9px;
+    margin-left:10px;
+  }
+  .foot__av{
+    width:30px;height:30px;flex:none;
+    border-radius:50%;overflow:hidden;
+    box-shadow:0 0 0 2px #151515;
+    display:grid;place-items:center;
+  }
+  .foot__av + .foot__av{margin-left:-10px}
+  .foot__av--photo{background:#3a3d45}
+  .foot__av--logo{background:#fff}
+  .foot__av img{width:100%;height:100%;object-fit:cover;display:block}
+  .foot__image{
+    margin-top:30px;
+    aspect-ratio:16/8.4;width:100%;
+    border-radius:12px;overflow:hidden;
+    background:linear-gradient(150deg,#2b2d33,#1d1f24);
+  }
+  .foot__image img{width:100%;height:100%;object-fit:cover;object-position:center 40.5%;display:block;filter:grayscale(1)}
+
+  /* ================= OPENER (ported from buff-site-pl.html) ================= */
+  .opener{
+    position:fixed;inset:0;z-index:9000;
+    background:var(--ink);
+    display:flex;align-items:center;justify-content:center;
+  }
+  /* the runner gif must sit dead-centre on the screen -- the two words
+     flanking it are allowed to read as unequal margins, that's the
+     intended look. Grid does that with two equal 1fr side columns, but
+     bare `1fr` gives each column an automatic minimum equal to its own
+     content: the first word (a plain .opener__word, overflow:hidden) can
+     shrink past that, while the second word's wrapper (.opener__col,
+     overflow:visible) can't, so on a narrow screen the two columns stopped
+     matching and the gif drifted off-centre. `minmax(0,1fr)` forces both
+     sides to the same shrink behaviour regardless of that wrapper. */
+  .opener__row{
+    position:relative;
+    display:grid;
+    grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);
+    align-items:center;
+    column-gap:16px;
+    width:100%;
+    font-family:var(--serif);font-optical-sizing:auto;font-weight:400;
+    font-size:clamp(1.6rem,5vw,3.5rem);letter-spacing:-.02em;color:#fff;
+  }
+  .opener__word{display:inline-block;overflow:hidden;vertical-align:top}
+  .opener__word > span{display:inline-block}
+  .opener__row > .opener__word:first-of-type{justify-self:end;min-width:0}
+  .opener__col{position:relative;display:inline-block;justify-self:start;min-width:0;overflow:hidden}
+  .opener__gifwrap{display:inline-flex;align-items:center;flex:none;justify-self:center}
+  .opener__gif{display:block;height:clamp(3em,26vh,5em);width:auto;object-fit:contain}
+  /* on a phone the ask flips: centre the "Hey, [gif] I'm Yurii." group as
+     one block instead of pinning the gif to the exact screen centre. Flex
+     + justify-content:center does that directly -- the grid-column dance
+     above is what desktop keeps, this just overrides it below 720px. */
+  @media (max-width:720px){
+    .opener__row{display:flex;justify-content:center}
+  }
+  html.gsap-failed .opener{display:none}
+  html.gsap-failed .opener__word > span{transform:none!important}
+</style>
+</head>
+<body>
+
+  <!-- ================= OPENER ================= -->
+  <div class="opener" id="opener" aria-hidden="true">
+    <div class="opener__row">
+      <span class="opener__word"><span>Cześć,</span></span>
+      <span class="opener__gifwrap"><img class="opener__gif" src="run-cycle.gif" alt="" /></span>
+      <span class="opener__col">
+        <span class="opener__word"><span>To Yurii.</span></span>
+      </span>
+    </div>
+  </div>
+
+  <!-- ================= OSMO-STYLE FLOATING PILL HEADER ================= -->
+  <div class="onav__scrim" id="onavScrim"></div>
+
+  <nav class="onav">
+    <div class="onav__bar" id="onavBar">
+      <div class="onav__row">
+        <button class="onav__menu" id="onavToggle" type="button" aria-expanded="false" aria-controls="onavPanel">
+          <span class="onav__burger" aria-hidden="true">
+            <svg class="onav__menuicon" viewBox="0 0 24 24" fill="none">
+              <line class="l1" x1="4" y1="6" x2="20" y2="6"/>
+              <line class="l2" x1="4" y1="12" x2="20" y2="12"/>
+              <line class="l3" x1="4" y1="18" x2="20" y2="18"/>
+            </svg>
+          </span>
+          <span class="onav__btn-roll onav__menu-roll"><span>Menu</span><span aria-hidden="true">Menu</span></span>
+        </button>
+
+        <a class="onav__logo" href="/pl" aria-label="Yurii — home">
+          <img src="run-cycle.gif" alt="" />
+        </a>
+
+        <div class="onav__actions">
+          <a class="onav__btn is-login" href="/pl#cv"><span class="onav__btn-roll"><span>Zobacz CV</span><span aria-hidden="true">Zobacz CV</span></span></a>
+          <div class="onav__lang" id="onavLang">
+            <button class="onav__lang-sq" id="onavLangBtn" type="button" aria-haspopup="true" aria-expanded="false"><span class="onav__lang-roll"><span>PL</span><span aria-hidden="true">PL</span></span></button>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="onav__clip">
+      <div class="onav__panel" id="onavPanel" aria-hidden="true">
+        <div class="onav__col">
+          <div class="onav__col-label">Nawigacja</div>
+          <ul>
+            <li><a href="/pl#top"><span class="onav__col-roll"><span>Główna</span><span aria-hidden="true">Główna</span></span></a></li>
+            <li><a href="/pl/about"><span class="onav__col-roll"><span>O mnie</span><span aria-hidden="true">O mnie</span></span></a></li>
+            <li><a href="/pl#cases"><span class="onav__col-roll"><span>Prace</span><span aria-hidden="true">Prace</span></span></a></li>
+          </ul>
+        </div>
+
+        <div class="onav__col">
+          <div class="onav__col-label">Projekty</div>
+          <ul>
+            <li><a href="/pl/monte"><span class="onav__col-roll"><span>Monte</span><span aria-hidden="true">Monte</span></span></a></li>
+            <li><a href="/pl#cases"><span class="onav__col-roll"><span>Blocks</span><span aria-hidden="true">Blocks</span></span></a></li>
+            <li><span class="onav__col-locked">BitBro <span class="onav__pill-tag onav__pill-tag--muted">NDA</span></span></li>
+            <li><span class="onav__col-locked">Projekt 04 <span class="onav__pill-tag onav__pill-tag--muted">Wkrótce</span></span></li>
+          </ul>
+          <div class="onav__socials">
+            <a href="https://www.linkedin.com/in/yurii-chernii-40b97939a/" target="_blank" rel="noopener" aria-label="LinkedIn"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M6.94 5A1.94 1.94 0 1 1 3.06 5a1.94 1.94 0 0 1 3.88 0ZM3.3 8.5h3.3V21H3.3V8.5Zm5.2 0h3.16v1.7h.05c.44-.83 1.5-1.7 3.1-1.7 3.32 0 3.93 2.18 3.93 5v6.5h-3.3v-5.76c0-1.37-.02-3.14-1.92-3.14-1.92 0-2.21 1.5-2.21 3.04V21H8.5V8.5Z"/></svg></a>
+            <a href="https://dribbble.com/M1lano" target="_blank" rel="noopener" aria-label="Dribbble"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M4 9.5c3 1 12 1 16.4-1M3.3 15c5-1.6 12-1 17-3.6M9 3c3 4 5 9.5 5.3 18"/></svg></a>
+            <a href="https://www.behance.net/YuriiChern11" target="_blank" rel="noopener" aria-label="Behance"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M4 5h5.4c1.9 0 3.3 1 3.3 2.8 0 1.1-.6 1.9-1.6 2.3 1.3.4 2.1 1.3 2.1 2.8 0 2.1-1.6 3.1-3.8 3.1H4V5Zm5 4.4c1 0 1.6-.4 1.6-1.3 0-.9-.6-1.3-1.6-1.3H6.6v2.6H9Zm.2 5.2c1.1 0 1.8-.5 1.8-1.5s-.7-1.5-1.8-1.5H6.6v3h2.6ZM14.5 8h5v1.3h-5V8ZM20 13.7c0 .2 0 .5 0 .7h-5.6c.1 1.3 1 2.1 2.2 2.1.9 0 1.6-.4 1.9-1.1h1.9c-.5 1.7-2 2.7-3.9 2.7-2.4 0-4.1-1.7-4.1-4.2 0-2.4 1.7-4.2 4.1-4.2 2.4 0 3.9 1.8 3.9 4Zm-5.5-1h3.5c-.1-1-.8-1.6-1.7-1.6-.9 0-1.6.6-1.8 1.6Z"/></svg></a>
+            <a href="https://t.me/m1lan081" target="_blank" rel="noopener" aria-label="Telegram"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M21.5 3.5 2.7 10.8c-1 .4-1 1.8.1 2.1l4.4 1.4 1.7 5.3c.2.7 1.1.9 1.6.3l2.4-2.7 4.6 3.4c.7.5 1.7.1 1.9-.7l3.4-15.6c.2-.9-.7-1.6-1.5-1.2ZM8.9 14.6l9.3-7.8-7.5 8.6-.2 2.9-1.6-3.7Z"/></svg></a>
+          </div>
+        </div>
+
+        <a class="onav__card" href="/pl#hero2Reel">
+          <div class="onav__card-years" aria-hidden="true">
+            <span class="onav__card-year onav__card-year--a">2024</span>
+            <span class="onav__card-year onav__card-year--b">2027</span>
+          </div>
+          <div class="onav__card-top">
+            <div class="onav__card-title">Showreel<br>moich prac</div>
+          </div>
+          <div class="onav__card-thumb" aria-hidden="true"><video src="reel.mp4" autoplay muted loop playsinline disablepictureinpicture disableremoteplayback preload="metadata"></video></div>
+        </a>
+      </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ============ CASE HERO — gradient intro, structure copied from
+       a reference case-study page: title + meta + description. Real Monte
+       copy throughout. ============ -->
+  <div class="proj">
+    <aside class="proj__left">
+      <div>
+        <h1 class="proj__title">Zaprojektowałem sklep e-commerce dla Lime Meble, marki mebli</h1>
+        <div class="proj__tags"><span>E-commerce</span><span>UI/UX Design</span><span>Web Design</span></div>
+      </div>
+
+      <div class="proj__next">
+        <a class="samen__btn" href="/#cases" data-btn-hover>
+          <span class="samen__btn-main">
+            <span class="samen__btn-circle"></span>
+            <span class="nextcase__icoL"><img src="client.svg" alt="" /></span>
+            <span class="samen__btn-text">
+              <span class="samen__btn-roll"><span>Następny projekt</span><span aria-hidden="true">Następny projekt</span></span>
+            </span>
+            <span class="nextcase__icoR"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8h10M9 4l4 4-4 4"/></svg></span>
+          </span>
+        </a>
+      </div>
+    </aside>
+
+    <div class="proj__media">
+      <section class="block" id="c1">
+        <p class="block__eyebrow">Lime Meble</p>
+        <h2 class="block__h">Zaprojektowałem sklep e-commerce dla Lime Meble, marki mebli</h2>
+        <p class="block__text">Marka mebli sprzedająca bezpośrednio do klienta potrzebowała sklepu, w którym produkt mówi sam za siebie &mdash; duże zdjęcia, spokojna siatka i checkout, który nie przeszkadza. Zaprojektowałem katalog, strony produktów i flow koszyka od początku do końca.</p>
+        <div class="shot"><img src="project2.jpg" alt="" loading="lazy" /></div>
+        <div class="shot"></div>
+        <div class="shot"></div>
+        <div class="shot"></div>
+      </section>
+    </div>
+  </div>
+
+
+  <footer class="foot" id="contact">
+    <div class="foot__top">
+      <div class="foot__lead">
+        <h2 class="foot__title">Zacznijmy rozmowę</h2>
+        <p class="foot__body">Otwarty na projekty product design &mdash; pełne wdrożenia lub skupiony sprint. Napisz, co budujesz, na <a href="https://t.me/m1lan081" target="_blank" rel="noopener">Telegram</a><span class="foot__avatars" aria-hidden="true"><span class="foot__av foot__av--photo"><img src="tg-1.png" alt="" /></span><span class="foot__av foot__av--logo"><img src="tg-2.svg" alt="" /></span></span> albo mailem, a ja wrócę z tym, jak bym to ugryzł.</p>
+      </div>
+
+      <div class="foot__side">
+        <div class="foot__label">Kontakt</div>
+        <div class="foot__contacts">
+          <span>Ze Lwowa do Warszawy</span>
+          <a href="mailto:cherniiyurii2024@gmail.com">cherniiyurii2024@gmail.com</a>
+        </div>
+        <div class="foot__label">Media</div>
+        <nav class="foot__social" aria-label="Social links">
+          <a href="https://www.behance.net/YuriiChern11" target="_blank" rel="noopener">Behance</a>
+          <a href="https://dribbble.com/M1lano" target="_blank" rel="noopener">Dribbble</a>
+          <a href="https://www.linkedin.com/in/yurii-chernii-40b97939a/" target="_blank" rel="noopener">LinkedIn</a>
+          <a href="https://t.me/m1lan081" target="_blank" rel="noopener">Telegram</a>
+        </nav>
+        <div class="foot__image"><img src="photo-1.png" alt="Yurii Chernii" loading="lazy" /></div>
+      </div>
+    </div>
+
+    <div class="foot__bar">
+      <span>&copy; 2026</span>
+      <span class="foot__bar-right">
+        <a href="/pl">Yurii Chernii</a>
+      </span>
+    </div>
+  </footer>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script>
+  /* ---------- roaming cursor over the case hero (ported from about-me.html) ---------- */
+  (function () {
+    var stage = document.querySelector('[data-hero-stage]');
+    var cur = document.querySelector('[data-cursor]');
+    var textEl = document.querySelector('[data-cursor-text]');
+    var reduceCur = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (!stage || !cur || !window.gsap || reduceCur) return;
+
+    var STOPS = [
+      { x: 14, y: 16, text: 'E-commerce' },
+      { x: 84, y: 18, text: 'Dwa typy klientów' },
+      { x: 16, y: 78, text: 'AI-first design' }
+    ];
+    var idx = 0;
+    function pos(k) {
+      var r = stage.getBoundingClientRect();
+      return { x: r.width * STOPS[k].x / 100, y: r.height * STOPS[k].y / 100 };
+    }
+
+    var p0 = pos(0);
+    gsap.set(cur, { x: p0.x, y: p0.y, opacity: 1, scale: 1, transformOrigin: '11px 11px' });
+    textEl.textContent = STOPS[0].text;
+
+    var typing = null;
+    function typewrite(text, done) {
+      if (typing) clearInterval(typing);
+      var i = 0;
+      typing = setInterval(function () {
+        i++;
+        textEl.innerHTML = text.slice(0, i).replace(/&/g, '&amp;').replace(/</g, '&lt;') + '<span class="caret"></span>';
+        if (i >= text.length) {
+          clearInterval(typing); typing = null;
+          textEl.textContent = text;
+          done && done();
+        }
+      }, 40);
+    }
+
+    var HOLD = 3.4, GLIDE = 2.25;
+    function loop() {
+      var nx = (idx + 1) % STOPS.length;
+      gsap.delayedCall(HOLD, function () {
+        var d = pos(nx);
+        gsap.to(cur, {
+          x: d.x, y: d.y, duration: GLIDE, ease: 'power2.inOut', roundProps: 'x,y',
+          onComplete: function () {
+            typewrite(STOPS[nx].text, function () { idx = nx; loop(); });
+          }
+        });
+      });
+    }
+    loop();
+
+    window.addEventListener('resize', function () {
+      var d = pos(idx);
+      gsap.set(cur, { x: d.x, y: d.y });
+    });
+  })();
+  </script>
+
+  <script>
+  (function () {
+    var root = document.documentElement;
+
+    /* the open chapter follows the media column */
+    var items = [].slice.call(document.querySelectorAll('.toc li'));
+    var pairs = items.map(function (li) {
+      return { li: li, el: document.getElementById(li.dataset.target) };
+    }).filter(function (p) { return p.el; });
+    if (pairs.length) {
+      var current = null;
+      var syncToc = function () {
+        var line = innerHeight * 0.4, found = pairs[0];
+        pairs.forEach(function (p) { if (p.el.getBoundingClientRect().top <= line) found = p; });
+        if (found === current) return;
+        current = found;
+        pairs.forEach(function (p) { p.li.classList.toggle('is-active', p === found); });
+      };
+      syncToc();
+      addEventListener('scroll', syncToc, { passive: true });
+      addEventListener('resize', syncToc);
+    }
+
+    /* ---------- SAMEN-style buttons: fill originates from where the cursor enters ---------- */
+    Array.prototype.forEach.call(document.querySelectorAll('.samen__btn'), function (btn) {
+      var circles = btn.querySelectorAll('.samen__btn-circle');
+      function put(e) {
+        circles.forEach(function (c) {
+          var r = c.parentElement.getBoundingClientRect();
+          c.style.setProperty('--mx', (e.clientX - r.left) + 'px');
+          c.style.setProperty('--my', (e.clientY - r.top) + 'px');
+        });
+      }
+      btn.addEventListener('mouseenter', function (e) { put(e); btn.classList.add('is-hover'); });
+      btn.addEventListener('mouseleave', function (e) { put(e); btn.classList.remove('is-hover'); });
+    });
+
+    /* ---------- hypotheses FAQ accordion (GSAP-driven height) ---------- */
+    document.querySelectorAll('[data-faq]').forEach(function (faq) {
+      faq.querySelectorAll('.block__faq-item').forEach(function (item) {
+        var body = item.querySelector('.block__faq-b');
+        var inner = body.firstElementChild;
+        var icon = item.querySelector('.block__faq-icon svg');
+        item.querySelector('.block__faq-t').addEventListener('click', function () {
+          var open = item.classList.toggle('is-open');
+          if (window.gsap) {
+            gsap.to(body, { height: open ? inner.offsetHeight : 0, duration: .45, ease: 'power3.inOut' });
+            gsap.to(icon, { rotate: open ? 45 : 0, duration: .35, ease: 'power3.out' });
+          } else {
+            body.style.height = open ? inner.offsetHeight + 'px' : '0px';
+          }
+        });
+      });
+    });
+
+    /* ---------- OSMO-STYLE HEADER: pill morph ---------- */
+    /* width grows first (CSS), then the panel drops to its exact measured
+       height (CSS transition on a JS-set --panel-h). No JS per-frame work,
+       no y-slide on the content -> one clean motion, no jank. */
+    var onavToggle = document.getElementById('onavToggle');
+    var onavPanel  = document.getElementById('onavPanel');
+    var onavScrim  = document.getElementById('onavScrim');
+    var onavClip   = document.querySelector('.onav__clip');
+    var onavEl     = document.querySelector('.onav');
+
+    /* measure the panel height ONCE (and on resize) — never during a toggle,
+       so the open transition always has a clean start value */
+    function measurePanel() {
+      if (root.classList.contains('onav-open')) return;   /* don't disturb an open menu */
+      onavEl.classList.add('is-measuring');
+      var h = onavPanel.offsetHeight;
+      onavEl.classList.remove('is-measuring');
+      onavClip.style.setProperty('--panel-h', (h + 90) + 'px');
+    }
+    measurePanel();
+    window.addEventListener('load', measurePanel);
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(measurePanel);
+
+    var rzT;
+    window.addEventListener('resize', function () {
+      clearTimeout(rzT);
+      rzT = setTimeout(measurePanel, 200);
+    });
+
+    /* the panel's reel keeps decoding frames behind a closed menu, which
+       costs a slice of every frame budget for something nobody can see —
+       so it only runs while the menu is actually open. */
+    var navVideo = document.querySelector('.onav__card-thumb video');
+    if (navVideo) navVideo.pause();
+
+    function setONav(open) {
+      root.classList.toggle('onav-open', open);
+      onavToggle.setAttribute('aria-expanded', open);
+      onavPanel.setAttribute('aria-hidden', !open);
+      if (navVideo) open ? navVideo.play().catch(function () {}) : navVideo.pause();
+    }
+    onavToggle.addEventListener('click', function () { setONav(!root.classList.contains('onav-open')); });
+    onavScrim.addEventListener('click', function () { setONav(false); });
+
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') { setONav(false); }
+    });
+
+  })();
+  </script>
+
+  <script>
+  /* ---------- header language switcher: square + hover dropdown ---------- */
+  (function () {
+    var sq = document.getElementById('onavLangBtn');
+    if (!sq) return;
+
+    var LANGS = [
+      { code: 'en', label: 'EN' },
+      { code: 'pl', label: 'PL' },
+      { code: 'uk', label: 'UA' }
+    ];
+    var current = document.documentElement.lang || 'en';
+
+    /* the menu lives on <body> so the header bar's overflow:hidden can't clip it */
+    var menu = document.createElement('div');
+    menu.className = 'onav__langmenu';
+    menu.setAttribute('role', 'menu');
+    document.body.appendChild(menu);
+
+    /* two stacked copies of the label -> the roll on hover */
+    function roll(label) {
+      return '<span class="onav__lang-roll"><span>' + label +
+             '</span><span aria-hidden="true">' + label + '</span></span>';
+    }
+
+    var items = [];
+    /* only the languages you're NOT on — the panel is a continuation of the square */
+    function build() {
+      menu.innerHTML = '';
+      items = LANGS.filter(function (l) { return l.code !== current; }).map(function (l) {
+        var b = document.createElement('button');
+        b.type = 'button';
+        b.innerHTML = roll(l.label);
+        b.dataset.lang = l.code;
+        b.setAttribute('role', 'menuitem');
+        b.addEventListener('click', function () {
+          var FILES = { en: '/project2', pl: '/pl/project2', uk: '/uk/project2' };
+          window.location.href = FILES[l.code] || '/pl/project2';
+        });
+        menu.appendChild(b);
+        return b;
+      });
+    }
+    build();
+
+    function place() {
+      var r = sq.getBoundingClientRect();
+      /* flush underneath, exactly as wide as the square */
+      menu.style.width = r.width + 'px';
+      menu.style.left = r.left + 'px';
+      menu.style.top = r.bottom + 'px';
+    }
+
+    var open = false, closeT;
+    var reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    function show() {
+      clearTimeout(closeT);
+      if (open) return;
+      open = true;
+      menu.classList.add('is-open');
+      sq.classList.add('is-open');
+      sq.setAttribute('aria-expanded', 'true');
+      place();
+      if (window.gsap && !reduce) {
+        gsap.killTweensOf([menu].concat(items));
+        gsap.set(menu, { opacity: 1, height: 'auto' });
+        var h = menu.offsetHeight;
+        gsap.fromTo(menu, { height: 0 }, { height: h, duration: 0.3, ease: 'power3.out' });
+        gsap.fromTo(items,
+          { opacity: 0, y: -5 },
+          { opacity: 1, y: 0, duration: 0.24, stagger: 0.05, ease: 'power2.out', delay: 0.05 });
+      } else {
+        menu.style.opacity = 1;
+        menu.style.height = 'auto';
+      }
+    }
+
+    function close(now) {
+      clearTimeout(closeT);
+      closeT = setTimeout(function () {
+        if (!open) return;
+        open = false;
+        sq.classList.remove('is-open');
+        sq.setAttribute('aria-expanded', 'false');
+        if (window.gsap && !reduce) {
+          gsap.killTweensOf([menu].concat(items));
+          gsap.to(menu, {
+            height: 0, duration: 0.22, ease: 'power2.in',
+            onComplete: function () {
+              gsap.set(menu, { opacity: 0 });
+              menu.classList.remove('is-open');
+            }
+          });
+        } else {
+          menu.style.opacity = 0;
+          menu.style.height = '0px';
+          menu.classList.remove('is-open');
+        }
+      }, now ? 0 : 140);
+    }
+
+    sq.addEventListener('mouseenter', show);
+    sq.addEventListener('focus', show);
+    sq.addEventListener('mouseleave', function () { close(); });
+    menu.addEventListener('mouseenter', function () { clearTimeout(closeT); });
+    menu.addEventListener('mouseleave', function () { close(); });
+    sq.addEventListener('click', function () { open ? close(true) : show(); });
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape') close(true); });
+    addEventListener('scroll', function () { if (open) place(); }, { passive: true });
+    addEventListener('resize', function () { if (open) place(); });
+  })();
+  </script>
+  <script>
+  (function () {
+    document.querySelectorAll('[data-caro]').forEach(function (caro) {
+      var track = caro.querySelector('[data-caro-track]');
+      var slides = Array.from(track.querySelectorAll('.caro__slide'));
+      var dotsWrap = caro.querySelector('[data-caro-dots]');
+      var zonePrev = caro.querySelector('[data-caro-zone-prev]');
+      var zoneNext = caro.querySelector('[data-caro-zone-next]');
+      var i = 0;
+
+      var dots = slides.map(function (slide, idx) {
+        var b = document.createElement('button');
+        b.className = 'caro__dot';
+        b.type = 'button';
+        b.setAttribute('aria-label', 'Przejdź do slajdu ' + (idx + 1));
+        var srcImg = slide.querySelector('img');
+        if (srcImg) {
+          var thumb = document.createElement('img');
+          thumb.src = srcImg.src;
+          thumb.alt = '';
+          thumb.loading = 'lazy';
+          b.appendChild(thumb);
+        }
+        b.addEventListener('click', function () { go(idx); });
+        dotsWrap.appendChild(b);
+        return b;
+      });
+
+      function go(idx) {
+        i = (idx + slides.length) % slides.length;
+        slides.forEach(function (s, si) { s.classList.toggle('is-active', si === i); });
+        dots.forEach(function (d, di) { d.classList.toggle('is-active', di === i); });
+      }
+
+      go(0);
+
+      zonePrev.addEventListener('click', function () { go(i - 1); });
+      zoneNext.addEventListener('click', function () { go(i + 1); });
+    });
+  })();
+  </script>
+
+  <div class="caro__lightbox" data-caro-lightbox>
+    <button class="caro__lightbox-close" type="button" data-caro-lightbox-close aria-label="Zamknij">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
+    </button>
+    <img src="" alt="" data-caro-lightbox-img />
+  </div>
+  <script>
+  (function () {
+    var lb = document.querySelector('[data-caro-lightbox]');
+    var lbImg = lb.querySelector('[data-caro-lightbox-img]');
+    var lbClose = lb.querySelector('[data-caro-lightbox-close]');
+
+    function open(src) {
+      lbImg.src = src;
+      lb.classList.add('is-open');
+      document.documentElement.style.overflow = 'hidden';
+    }
+    function close() {
+      lb.classList.remove('is-open');
+      document.documentElement.style.overflow = '';
+    }
+
+    document.querySelectorAll('[data-caro-track]').forEach(function (track) {
+      /* hold (press and don't release) to open the lightbox, instead of
+         a double click — a quick tap still just navigates via the zones */
+      var holdTimer = null;
+      var holdFired = false;
+      track.addEventListener('pointerdown', function () {
+        holdFired = false;
+        holdTimer = setTimeout(function () {
+          holdFired = true;
+          var active = track.querySelector('.caro__slide.is-active img');
+          if (active) open(active.src);
+        }, 450);
+      });
+      ['pointerup', 'pointerleave', 'pointercancel'].forEach(function (evt) {
+        track.addEventListener(evt, function () { clearTimeout(holdTimer); });
+      });
+      track.addEventListener('click', function (e) {
+        if (holdFired) { e.stopPropagation(); e.preventDefault(); }
+      }, true);
+    });
+    /* any other placeholder image on the page (outside the carousel,
+       which already has its own hold-to-open) opens on a plain click */
+    document.querySelectorAll('.shot img').forEach(function (img) {
+      if (img.closest('.caro__slide')) return;
+      img.addEventListener('click', function () { open(img.src); });
+    });
+
+    lbClose.addEventListener('click', close);
+    lb.addEventListener('click', function (e) { if (e.target === lb) close(); });
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape') close(); });
+  })();
+  </script>
+
+  <script>
+  /* ---------- opener intro (ported from buff-site-pl.html) ---------- */
+  (function () {
+    var reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (!window.gsap || reduce) {
+      document.documentElement.classList.add('gsap-failed');
+      return;
+    }
+    gsap.set('.opener__word > span', { yPercent: 118 });
+    var tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
+    tl.to('.opener__word > span', { yPercent: 0, duration: 0.7, stagger: 0.09 }, 0.25)
+      .from('.opener__gif', { scale: 0.55, duration: 0.6, ease: 'back.out(1.7)' }, 0.34)
+      .to('.opener', { yPercent: -101, duration: 0.8, ease: 'power4.inOut' }, '+=0.9')
+      .set('.opener', { display: 'none' });
+  })();
+  </script>
+
+  <script>
+  /* ---------- lazy-load the heavy .shot showcase videos ----------
+     these run 3-18MB each; loading all seven on page load was the
+     main reason this page felt slow. Only fetch + play once a video
+     scrolls near the viewport, pause it once it scrolls away. */
+  (function () {
+    var vids = document.querySelectorAll('.shot video[data-src]');
+    if (!vids.length) return;
+    if (!('IntersectionObserver' in window)) {
+      vids.forEach(function (v) { v.src = v.dataset.src; v.play().catch(function () {}); });
+      return;
+    }
+    var io = new IntersectionObserver(function (ents) {
+      ents.forEach(function (ent) {
+        var v = ent.target;
+        if (ent.isIntersecting) {
+          if (!v.src) v.src = v.dataset.src;
+          v.play().catch(function () {});
+        } else {
+          v.pause();
+        }
+      });
+    }, { rootMargin: '400px' });
+    vids.forEach(function (v) { io.observe(v); });
+  })();
+  </script>
+</body>
+</html>

@@ -4,6 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Юрій Черній — про мене</title>
+<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Gelasio:ital,wght@0,400..700;1,400..700&family=Inter:wght@400;500;600&family=Inter+Tight:wght@400;500;600&display=swap" rel="stylesheet" />
@@ -1012,7 +1013,7 @@
           <span class="onav__btn-roll onav__menu-roll"><span>Menu</span><span aria-hidden="true">Menu</span></span>
         </button>
 
-        <a class="onav__logo" href="buff-site-uk.html" aria-label="Юрій — головна">
+        <a class="onav__logo" href="/uk" aria-label="Юрій — головна">
           <img src="run-cycle.gif" alt="" />
         </a>
 
@@ -1039,7 +1040,7 @@
         <div class="onav__col">
           <div class="onav__col-label">Кейси</div>
           <ul>
-            <li><a href="case-monte-uk.html"><span class="onav__col-roll"><span>Monte</span><span aria-hidden="true">Monte</span></span></a></li>
+            <li><a href="/uk/monte"><span class="onav__col-roll"><span>Monte</span><span aria-hidden="true">Monte</span></span></a></li>
             <li><a href="buff-site-uk.html#cases"><span class="onav__col-roll"><span>Blocks</span><span aria-hidden="true">Blocks</span></span></a></li>
             <li><span class="onav__col-locked">BitBro <span class="onav__pill-tag onav__pill-tag--muted">NDA</span></span></li>
             <li><span class="onav__col-locked">Кейс 04 <span class="onav__pill-tag onav__pill-tag--muted">Незабаром</span></span></li>
@@ -1353,7 +1354,7 @@
     <div class="foot__bar">
       <span>© 2026</span>
       <span class="foot__bar-right">
-        <a href="buff-site-uk.html">Yurii Chernii</a>
+        <a href="/uk">Yurii Chernii</a>
       </span>
     </div>
   </footer>
@@ -1756,8 +1757,8 @@
         b.dataset.lang = l.code;
         b.setAttribute('role', 'menuitem');
         b.addEventListener('click', function () {
-          var FILES = { en: 'about-me.html', pl: 'about-me-pl.html', uk: 'about-me-uk.html' };
-          window.location.href = FILES[l.code] || 'about-me-uk.html';
+          var FILES = { en: '/about', pl: '/pl/about', uk: '/uk/about' };
+          window.location.href = FILES[l.code] || '/uk/about';
         });
         menu.appendChild(b);
         return b;

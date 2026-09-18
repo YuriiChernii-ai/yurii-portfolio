@@ -4,6 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Monte — case study</title>
+<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Gelasio:ital,wght@0,400..700;1,400..700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
@@ -1017,7 +1018,7 @@
           <span class="onav__btn-roll onav__menu-roll"><span>Menu</span><span aria-hidden="true">Menu</span></span>
         </button>
 
-        <a class="onav__logo" href="buff-site.html" aria-label="Yurii — home">
+        <a class="onav__logo" href="/" aria-label="Yurii — home">
           <img src="run-cycle.gif" alt="" />
         </a>
 
@@ -1036,7 +1037,7 @@
           <div class="onav__col-label">Navigation</div>
           <ul>
             <li><a href="buff-site.html#top"><span class="onav__col-roll"><span>Main</span><span aria-hidden="true">Main</span></span></a></li>
-            <li><a href="about-me.html"><span class="onav__col-roll"><span>About me</span><span aria-hidden="true">About me</span></span></a></li>
+            <li><a href="/about"><span class="onav__col-roll"><span>About me</span><span aria-hidden="true">About me</span></span></a></li>
             <li><a href="buff-site.html#cases"><span class="onav__col-roll"><span>Works</span><span aria-hidden="true">Works</span></span></a></li>
           </ul>
         </div>
@@ -1044,7 +1045,7 @@
         <div class="onav__col">
           <div class="onav__col-label">Cases</div>
           <ul>
-            <li><a href="case-monte.html"><span class="onav__col-roll"><span>Monte</span><span aria-hidden="true">Monte</span></span></a></li>
+            <li><a href="/monte"><span class="onav__col-roll"><span>Monte</span><span aria-hidden="true">Monte</span></span></a></li>
             <li><a href="buff-site.html#cases"><span class="onav__col-roll"><span>Blocks</span><span aria-hidden="true">Blocks</span></span></a></li>
             <li><span class="onav__col-locked">BitBro <span class="onav__pill-tag onav__pill-tag--muted">NDA</span></span></li>
             <li><span class="onav__col-locked">Case 04 <span class="onav__pill-tag onav__pill-tag--muted">Soon</span></span></li>
@@ -1497,7 +1498,7 @@
     <div class="foot__bar">
       <span>&copy; 2026</span>
       <span class="foot__bar-right">
-        <a href="buff-site.html">Yurii Chernii</a>
+        <a href="/">Yurii Chernii</a>
       </span>
     </div>
   </footer>
@@ -1706,8 +1707,8 @@
         b.dataset.lang = l.code;
         b.setAttribute('role', 'menuitem');
         b.addEventListener('click', function () {
-          var FILES = { en: 'case-monte.html', pl: 'case-monte-pl.html', uk: 'case-monte-uk.html' };
-          window.location.href = FILES[l.code] || 'case-monte.html';
+          var FILES = { en: '/monte', pl: '/pl/monte', uk: '/uk/monte' };
+          window.location.href = FILES[l.code] || '/monte';
         });
         menu.appendChild(b);
         return b;

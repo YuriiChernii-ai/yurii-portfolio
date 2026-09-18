@@ -4,6 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Yurii Chernii — Product Designer</title>
+<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Gelasio:ital,wght@0,400..700;1,400..700&family=Inter:wght@400;500;600&family=Inter+Tight:wght@400;500;600&display=swap" rel="stylesheet" />
@@ -1287,7 +1288,7 @@
           <span class="case__copy">
             <span class="case__head">Zaprojektowałem platformę e-commerce motoryzacyjnego od researchu po gotowy UI kit</span>
             <span class="case__body">Kompleksowy projekt produktowy dla sklepu własnej marki tuningu zewnętrznego: analiza konkurencji, wywiady z kupującymi, katalog z wyborem po aucie, działający konfigurator 3D części i UI kit oparty na tokenach, który to wszystko spina.</span>
-            <a class="case__cta samen__btn" href="case-monte-pl.html" data-btn-hover>
+            <a class="case__cta samen__btn" href="/pl/monte" data-btn-hover>
               <span class="samen__btn-main">
                 <span class="samen__btn-circle"></span>
                 <span class="samen__btn-text">
@@ -1297,7 +1298,7 @@
             </a>
           </span>
         </span>
-        <a class="case__media" href="case-monte-pl.html"><img src="Link.jpg" alt="" loading="lazy" /></a>
+        <a class="case__media" href="/pl/monte"><img src="Link.jpg" alt="" loading="lazy" /></a>
       </div>
       <div class="case case--rev" data-group="cases">
         <a class="case__media" href="https://www.behance.net/YuriiChern11" target="_blank" rel="noopener" data-cursor-label="Zobacz na Behance"><img src="soldat.png" alt="" loading="lazy" /></a>
@@ -1364,7 +1365,7 @@
       <div class="samen__left">
         <h2 class="samen__title" data-word-pop>Razem możemy więcej</h2>
         <p class="samen__text" data-reveal-text>Product designer z&nbsp;3-letnim doświadczeniem w&nbsp;e-commerce, EdTech, startupach AI, miltech, mobile i&nbsp;gamingu. Lubię research w&nbsp;projektowaniu tak&nbsp;samo jak pracę z&nbsp;pikselami, a&nbsp;swój proces buduję wokół narzędzi AI, zamiast dodawać je do&nbsp;gotowego podejścia.</p>
-        <a class="samen__btn" href="about-me-pl.html" data-btn-hover>
+        <a class="samen__btn" href="/pl/about" data-btn-hover>
           <span class="samen__btn-main">
             <span class="samen__btn-circle"></span>
             <span class="samen__btn-text">
@@ -1525,7 +1526,7 @@
           <div class="onav__col-label">Nawigacja</div>
           <ul>
             <li><a href="#top"><span class="onav__col-roll"><span>Główna</span><span aria-hidden="true">Główna</span></span></a></li>
-            <li><a href="about-me-pl.html"><span class="onav__col-roll"><span>O mnie</span><span aria-hidden="true">O mnie</span></span></a></li>
+            <li><a href="/pl/about"><span class="onav__col-roll"><span>O mnie</span><span aria-hidden="true">O mnie</span></span></a></li>
             <li><a href="#cases"><span class="onav__col-roll"><span>Prace</span><span aria-hidden="true">Prace</span></span></a></li>
           </ul>
         </div>
@@ -1533,7 +1534,7 @@
         <div class="onav__col">
           <div class="onav__col-label">Projekty</div>
           <ul>
-            <li><a href="case-monte-pl.html"><span class="onav__col-roll"><span>Monte</span><span aria-hidden="true">Monte</span></span></a></li>
+            <li><a href="/pl/monte"><span class="onav__col-roll"><span>Monte</span><span aria-hidden="true">Monte</span></span></a></li>
             <li><a href="#cases"><span class="onav__col-roll"><span>Blocks</span><span aria-hidden="true">Blocks</span></span></a></li>
             <li><span class="onav__col-locked">BitBro <span class="onav__pill-tag onav__pill-tag--muted">NDA</span></span></li>
             <li><span class="onav__col-locked">Projekt 04 <span class="onav__pill-tag onav__pill-tag--muted">Wkrótce</span></span></li>
@@ -2120,8 +2121,8 @@
         b.dataset.lang = l.code;
         b.setAttribute('role', 'menuitem');
         b.addEventListener('click', function () {
-          var FILES = { en: 'buff-site.html', pl: 'buff-site-pl.html', uk: 'buff-site-uk.html' };
-          window.location.href = FILES[l.code] || 'buff-site.html';
+          var FILES = { en: '/', pl: '/pl', uk: '/uk' };
+          window.location.href = FILES[l.code] || '/pl';
         });
         menu.appendChild(b);
         return b;

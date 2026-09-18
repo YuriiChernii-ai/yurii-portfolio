@@ -4,6 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Юрій Черній — продуктовий дизайнер</title>
+<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Gelasio:ital,wght@0,400..700;1,400..700&family=Inter:wght@400;500;600&family=Inter+Tight:wght@400;500;600&display=swap" rel="stylesheet" />
@@ -1288,7 +1289,7 @@
           <span class="case__copy">
             <span class="case__head">Спроєктував платформу автомобільного e-commerce від ресерчу до готового UI kit</span>
             <span class="case__body">Продуктовий дизайн повного циклу для інтернет-магазину екстерʼєрного тюнінгу власного бренду: конкурентний аналіз, інтервʼю з покупцями, каталог із вибором по авто, живий 3D-конфігуратор деталей, і UI kit на токенах, що все це зв'язує.</span>
-            <a class="case__cta samen__btn" href="case-monte-uk.html" data-btn-hover>
+            <a class="case__cta samen__btn" href="/uk/monte" data-btn-hover>
               <span class="samen__btn-main">
                 <span class="samen__btn-circle"></span>
                 <span class="samen__btn-text">
@@ -1298,7 +1299,7 @@
             </a>
           </span>
         </span>
-        <a class="case__media" href="case-monte-uk.html"><img src="Link.jpg" alt="" loading="lazy" /></a>
+        <a class="case__media" href="/uk/monte"><img src="Link.jpg" alt="" loading="lazy" /></a>
       </div>
       <div class="case case--rev" data-group="cases">
         <a class="case__media" href="https://www.behance.net/YuriiChern11" target="_blank" rel="noopener" data-cursor-label="Дивитись на Behance"><img src="soldat.png" alt="" loading="lazy" /></a>
@@ -1365,7 +1366,7 @@
       <div class="samen__left">
         <h2 class="samen__title" data-word-pop>Разом ми можемо більше</h2>
         <p class="samen__text" data-reveal-text>Продуктовий дизайнер із майже 3 роками досвіду в e-commerce, EdTech, AI-стартапах, miltech, mobile та gaming. Мені подобається дослідницька частина дизайну так само, як і робота з пікселями, а власний процес я вибудовую навколо AI-інструментів, а не просто додаю їх до вже готового підходу.</p>
-        <a class="samen__btn" href="about-me-uk.html" data-btn-hover>
+        <a class="samen__btn" href="/uk/about" data-btn-hover>
           <span class="samen__btn-main">
             <span class="samen__btn-circle"></span>
             <span class="samen__btn-text">
@@ -1526,7 +1527,7 @@
           <div class="onav__col-label">Навігація</div>
           <ul>
             <li><a href="#top"><span class="onav__col-roll"><span>Головна</span><span aria-hidden="true">Головна</span></span></a></li>
-            <li><a href="about-me-uk.html"><span class="onav__col-roll"><span>Про мене</span><span aria-hidden="true">Про мене</span></span></a></li>
+            <li><a href="/uk/about"><span class="onav__col-roll"><span>Про мене</span><span aria-hidden="true">Про мене</span></span></a></li>
             <li><a href="#cases"><span class="onav__col-roll"><span>Роботи</span><span aria-hidden="true">Роботи</span></span></a></li>
           </ul>
         </div>
@@ -1534,7 +1535,7 @@
         <div class="onav__col">
           <div class="onav__col-label">Кейси</div>
           <ul>
-            <li><a href="case-monte-uk.html"><span class="onav__col-roll"><span>Monte</span><span aria-hidden="true">Monte</span></span></a></li>
+            <li><a href="/uk/monte"><span class="onav__col-roll"><span>Monte</span><span aria-hidden="true">Monte</span></span></a></li>
             <li><a href="#cases"><span class="onav__col-roll"><span>Blocks</span><span aria-hidden="true">Blocks</span></span></a></li>
             <li><span class="onav__col-locked">BitBro <span class="onav__pill-tag onav__pill-tag--muted">NDA</span></span></li>
             <li><span class="onav__col-locked">Кейс 04 <span class="onav__pill-tag onav__pill-tag--muted">Незабаром</span></span></li>
@@ -2099,8 +2100,8 @@
         b.dataset.lang = l.code;
         b.setAttribute('role', 'menuitem');
         b.addEventListener('click', function () {
-          var FILES = { en: 'buff-site.html', pl: 'buff-site-pl.html', uk: 'buff-site-uk.html' };
-          window.location.href = FILES[l.code] || 'buff-site.html';
+          var FILES = { en: '/', pl: '/pl', uk: '/uk' };
+          window.location.href = FILES[l.code] || '/uk';
         });
         menu.appendChild(b);
         return b;

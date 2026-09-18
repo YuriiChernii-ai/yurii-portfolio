@@ -2,6 +2,14 @@
   "framework": null,
   "buildCommand": null,
   "rewrites": [
-    { "source": "/", "destination": "/buff-site.html" }
+    { "source": "/", "destination": "/buff-site.html" },
+    { "source": "/about", "destination": "/about-me.html" },
+    { "source": "/monte", "destination": "/case-monte.html" },
+    { "source": "/uk", "destination": "/buff-site-uk.html" },
+    { "source": "/uk/about", "destination": "/about-me-uk.html" },
+    { "source": "/uk/monte", "destination": "/case-monte-uk.html" },
+    { "source": "/pl", "destination": "/buff-site-pl.html" },
+    { "source": "/pl/about", "destination": "/about-me-pl.html" },
+    { "source": "/pl/monte", "destination": "/case-monte-pl.html" }
   ]
 }

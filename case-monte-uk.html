@@ -4,6 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Monte — кейс</title>
+<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Gelasio:ital,wght@0,400..700;1,400..700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
@@ -1017,7 +1018,7 @@
           <span class="onav__btn-roll onav__menu-roll"><span>Меню</span><span aria-hidden="true">Меню</span></span>
         </button>
 
-        <a class="onav__logo" href="buff-site-uk.html" aria-label="Yurii — home">
+        <a class="onav__logo" href="/uk" aria-label="Yurii — home">
           <img src="run-cycle.gif" alt="" />
         </a>
 
@@ -1036,7 +1037,7 @@
           <div class="onav__col-label">Навігація</div>
           <ul>
             <li><a href="buff-site-uk.html#top"><span class="onav__col-roll"><span>Головна</span><span aria-hidden="true">Головна</span></span></a></li>
-            <li><a href="about-me-uk.html"><span class="onav__col-roll"><span>Про мене</span><span aria-hidden="true">Про мене</span></span></a></li>
+            <li><a href="/uk/about"><span class="onav__col-roll"><span>Про мене</span><span aria-hidden="true">Про мене</span></span></a></li>
             <li><a href="buff-site-uk.html#cases"><span class="onav__col-roll"><span>Роботи</span><span aria-hidden="true">Роботи</span></span></a></li>
           </ul>
         </div>
@@ -1044,7 +1045,7 @@
         <div class="onav__col">
           <div class="onav__col-label">Кейси</div>
           <ul>
-            <li><a href="case-monte-uk.html"><span class="onav__col-roll"><span>Monte</span><span aria-hidden="true">Monte</span></span></a></li>
+            <li><a href="/uk/monte"><span class="onav__col-roll"><span>Monte</span><span aria-hidden="true">Monte</span></span></a></li>
             <li><a href="buff-site-uk.html#cases"><span class="onav__col-roll"><span>Blocks</span><span aria-hidden="true">Blocks</span></span></a></li>
             <li><span class="onav__col-locked">BitBro <span class="onav__pill-tag onav__pill-tag--muted">NDA</span></span></li>
             <li><span class="onav__col-locked">Кейс 04 <span class="onav__pill-tag onav__pill-tag--muted">Незабаром</span></span></li>
@@ -1497,7 +1498,7 @@
     <div class="foot__bar">
       <span>&copy; 2026</span>
       <span class="foot__bar-right">
-        <a href="buff-site-uk.html">Yurii Chernii</a>
+        <a href="/uk">Yurii Chernii</a>
       </span>
     </div>
   </footer>
@@ -1706,8 +1707,8 @@
         b.dataset.lang = l.code;
         b.setAttribute('role', 'menuitem');
         b.addEventListener('click', function () {
-          var FILES = { en: 'case-monte.html', pl: 'case-monte-pl.html', uk: 'case-monte-uk.html' };
-          window.location.href = FILES[l.code] || 'case-monte.html';
+          var FILES = { en: '/monte', pl: '/pl/monte', uk: '/uk/monte' };
+          window.location.href = FILES[l.code] || '/uk/monte';
         });
         menu.appendChild(b);
         return b;

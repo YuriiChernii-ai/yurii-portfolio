@@ -4,6 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Yurii Chernii — Product Designer</title>
+<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Gelasio:ital,wght@0,400..700;1,400..700&family=Inter:wght@400;500;600&family=Inter+Tight:wght@400;500;600&display=swap" rel="stylesheet" />
@@ -1302,7 +1303,7 @@
           <span class="case__copy">
             <span class="case__head">Designed an automotive e-commerce platform from research to a shippable UI kit</span>
             <span class="case__body">Full-cycle product design for an own-brand car-tuning store: competitor analysis, buyer interviews, a vehicle-first catalog, a live 3D part configurator, and the token-based UI kit that ties it together.</span>
-            <a class="case__cta samen__btn" href="case-monte.html" data-btn-hover>
+            <a class="case__cta samen__btn" href="/monte" data-btn-hover>
               <span class="samen__btn-main">
                 <span class="samen__btn-circle"></span>
                 <span class="samen__btn-text">
@@ -1312,7 +1313,7 @@
             </a>
           </span>
         </span>
-        <a class="case__media" href="case-monte.html"><img src="Link.jpg" alt="" loading="lazy" /></a>
+        <a class="case__media" href="/monte"><img src="Link.jpg" alt="" loading="lazy" /></a>
       </div>
       <div class="case case--rev" data-group="cases">
         <a class="case__media" href="https://www.behance.net/YuriiChern11" target="_blank" rel="noopener" data-cursor-label="View on Behance"><img src="soldat.png" alt="" loading="lazy" /></a>
@@ -1379,7 +1380,7 @@
       <div class="samen__left">
         <h2 class="samen__title" data-word-pop>By working together we go further</h2>
         <p class="samen__text" data-reveal-text>Product designer with 3 years of experience across e-commerce, EdTech, AI startups, miltech, mobile and gaming. I like the research side of design as much as the pixels, and I build my own process around AI tools rather than bolting them on.</p>
-        <a class="samen__btn" href="about-me.html" data-btn-hover>
+        <a class="samen__btn" href="/about" data-btn-hover>
           <span class="samen__btn-main">
             <span class="samen__btn-circle"></span>
             <span class="samen__btn-text">
@@ -1540,7 +1541,7 @@
           <div class="onav__col-label">Navigation</div>
           <ul>
             <li><a href="#top"><span class="onav__col-roll"><span>Main</span><span aria-hidden="true">Main</span></span></a></li>
-            <li><a href="about-me.html"><span class="onav__col-roll"><span>About me</span><span aria-hidden="true">About me</span></span></a></li>
+            <li><a href="/about"><span class="onav__col-roll"><span>About me</span><span aria-hidden="true">About me</span></span></a></li>
             <li><a href="#cases"><span class="onav__col-roll"><span>Works</span><span aria-hidden="true">Works</span></span></a></li>
           </ul>
         </div>
@@ -1548,7 +1549,7 @@
         <div class="onav__col">
           <div class="onav__col-label">Cases</div>
           <ul>
-            <li><a href="case-monte.html"><span class="onav__col-roll"><span>Monte</span><span aria-hidden="true">Monte</span></span></a></li>
+            <li><a href="/monte"><span class="onav__col-roll"><span>Monte</span><span aria-hidden="true">Monte</span></span></a></li>
             <li><a href="#cases"><span class="onav__col-roll"><span>Blocks</span><span aria-hidden="true">Blocks</span></span></a></li>
             <li><span class="onav__col-locked">BitBro <span class="onav__pill-tag onav__pill-tag--muted">NDA</span></span></li>
             <li><span class="onav__col-locked">Case 04 <span class="onav__pill-tag onav__pill-tag--muted">Soon</span></span></li>
@@ -2117,8 +2118,8 @@
         b.dataset.lang = l.code;
         b.setAttribute('role', 'menuitem');
         b.addEventListener('click', function () {
-          var FILES = { en: 'buff-site.html', pl: 'buff-site-pl.html', uk: 'buff-site-uk.html' };
-          window.location.href = FILES[l.code] || 'buff-site.html';
+          var FILES = { en: '/', pl: '/pl', uk: '/uk' };
+          window.location.href = FILES[l.code] || '/';
         });
         menu.appendChild(b);
         return b;

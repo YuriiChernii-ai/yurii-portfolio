@@ -591,6 +591,10 @@
   }
   .shot img{cursor:zoom-in}
   .block > * + *{margin-top:21px}
+  #c1 .shot + .shot{margin-top:16px}
+  .shot:has(> img[src="project3.jpg"]){aspect-ratio:1400/1050}
+  .shot:has(> img[src="marketing1.jpg"]){aspect-ratio:1800/9093}
+  .shot:has(> video[data-src="marketing4.mp4"]){aspect-ratio:1918/1000}
   .block + .block{margin-top:21px}
   /* same 64px "into/out of an image" rhythm used inside a block, applied
      across block boundaries too: previous block ends in media, or next
@@ -1113,9 +1117,10 @@
         <h2 class="block__h">Zaprojektowałem stronę dla Insense, agencji marketingowej</h2>
         <p class="block__text">Agencja marketingowa potrzebowała strony, która sprzedaje ich własną pracę tak pewnie, jak oni sprzedają pracę klientów. Zaprojektowałem stronę główną opartą na case studies, strony usług i lekką strukturę, którą zespół może aktualizować samodzielnie.</p>
         <div class="shot"><img src="project3.jpg" alt="" loading="lazy" /></div>
-        <div class="shot"></div>
-        <div class="shot"></div>
-        <div class="shot"></div>
+        <div class="shot"><img src="marketing1.jpg" alt="" loading="lazy" /></div>
+        <div class="shot"><video data-src="marketing3.mp4" muted loop playsinline disablepictureinpicture disableremoteplayback preload="none"></video></div>
+        <div class="shot"><img src="marketing5.jpg" alt="" loading="lazy" /></div>
+        <div class="shot"><video data-src="marketing4.mp4" muted loop playsinline disablepictureinpicture disableremoteplayback preload="none"></video></div>
       </section>
     </div>
   </div>

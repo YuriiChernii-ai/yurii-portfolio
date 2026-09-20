@@ -591,6 +591,8 @@
   }
   .shot img{cursor:zoom-in}
   .block > * + *{margin-top:21px}
+  #c1 .shot + .shot{margin-top:16px}
+  .shot:has(> img[src="r6.png"]){aspect-ratio:1080/1920}
   .block + .block{margin-top:21px}
   /* same 64px "into/out of an image" rhythm used inside a block, applied
      across block boundaries too: previous block ends in media, or next
@@ -1113,9 +1115,12 @@
         <h2 class="block__h">Підтримую бренд-айдентику Revo — від моушн-гайдлайнів до 3D-анімації</h2>
         <p class="block__text">Айдентика Revo починалась як один логотип без жодної системи навколо. Я лишився їхнім постійним дизайн-партнером: побудував візуальну систему &mdash; кольорову й типографічну шкалу, іконографію, сітки макетів &mdash; і тепер роблю 3D-моушн для релізів продукту й соцмереж, щоб бренд лишався впізнаваним і в статиці, і в русі.</p>
         <div class="shot"><img src="project4.jpg" alt="" loading="lazy" /></div>
-        <div class="shot"></div>
-        <div class="shot"></div>
-        <div class="shot"></div>
+        <div class="shot"><video data-src="r1.mp4" muted loop playsinline disablepictureinpicture disableremoteplayback preload="none"></video></div>
+        <div class="shot"><img src="r2.jpg" alt="" loading="lazy" /></div>
+        <div class="shot"><video data-src="r3.mp4" muted loop playsinline disablepictureinpicture disableremoteplayback preload="none"></video></div>
+        <div class="shot"><img src="r4.jpg" alt="" loading="lazy" /></div>
+        <div class="shot"><img src="r5.png" alt="" loading="lazy" /></div>
+        <div class="shot"><img src="r6.png" alt="" loading="lazy" /></div>
       </section>
     </div>
   </div>

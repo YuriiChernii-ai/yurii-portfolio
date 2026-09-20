@@ -591,6 +591,8 @@
   }
   .shot img{cursor:zoom-in}
   .block > * + *{margin-top:21px}
+  #c1 .shot + .shot{margin-top:16px}
+  .shot:has(> img[src="r6.png"]){aspect-ratio:1080/1920}
   .block + .block{margin-top:21px}
   /* same 64px "into/out of an image" rhythm used inside a block, applied
      across block boundaries too: previous block ends in media, or next
@@ -1113,9 +1115,12 @@
         <h2 class="block__h">Supporting Revo's brand identity, from motion guidelines to 3D animation</h2>
         <p class="block__text">Revo's identity started as a single logo mark with no system behind it. I stayed on as their ongoing design partner: built out the visual system &mdash; type and color scale, iconography, layout grids &mdash; and now produce the 3D motion pieces for product drops and social campaigns, so the brand stays consistent whether it's sitting still or moving.</p>
         <div class="shot"><img src="project4.jpg" alt="" loading="lazy" /></div>
-        <div class="shot"></div>
-        <div class="shot"></div>
-        <div class="shot"></div>
+        <div class="shot"><video data-src="r1.mp4" muted loop playsinline disablepictureinpicture disableremoteplayback preload="none"></video></div>
+        <div class="shot"><img src="r2.jpg" alt="" loading="lazy" /></div>
+        <div class="shot"><video data-src="r3.mp4" muted loop playsinline disablepictureinpicture disableremoteplayback preload="none"></video></div>
+        <div class="shot"><img src="r4.jpg" alt="" loading="lazy" /></div>
+        <div class="shot"><img src="r5.png" alt="" loading="lazy" /></div>
+        <div class="shot"><img src="r6.png" alt="" loading="lazy" /></div>
       </section>
     </div>
   </div>

@@ -592,9 +592,8 @@
   .shot img{cursor:zoom-in}
   .block > * + *{margin-top:21px}
   .shot + .shot{margin-top:16px}
-  .trio{display:grid;grid-template-columns:1fr 1fr 1fr;gap:17px}
-  .trio .shot{aspect-ratio:4/3}
-  @media (max-width:640px){.trio{grid-template-columns:1fr}}
+  .stack img{width:100%;display:block;border-radius:12px;cursor:zoom-in}
+  .stack img + img{margin-top:16px}
   .block + .block{margin-top:21px}
   /* same 64px "into/out of an image" rhythm used inside a block, applied
      across block boundaries too: previous block ends in media, or next
@@ -1116,10 +1115,10 @@
         <p class="block__eyebrow">Client</p>
         <h2 class="block__h">Redesigned the website for a Telegram-based crypto trading app</h2>
         <p class="block__text">The client came to me feeling their existing site no longer matched the product &mdash; too generic for something built around fast, in-app crypto trading. I redesigned the landing page around a single action, opening the app, with clear messaging about real-time data and instant execution.</p>
-        <div class="trio">
-          <div class="shot"><img src="cr-1.jpg" alt="" loading="lazy" /></div>
-          <div class="shot"><img src="cr-2.jpg" alt="" loading="lazy" /></div>
-          <div class="shot"><img src="cr-3.jpg" alt="" loading="lazy" /></div>
+        <div class="stack">
+          <img src="cr-1.jpg" alt="" loading="lazy" />
+          <img src="cr-2.jpg" alt="" loading="lazy" />
+          <img src="cr-3.jpg" alt="" loading="lazy" />
         </div>
       </section>
     </div>

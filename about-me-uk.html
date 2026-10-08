@@ -978,6 +978,14 @@
   @media (prefers-reduced-motion:reduce){
     *{transition-duration:.001s!important;animation-duration:.001s!important}
   }
+
+  /* ---- very wide screens: keep content centered, not edge-to-edge ----
+     Sections keep their full-bleed backgrounds; only the content inside is
+     capped (1920 outer, or 1820 where a 50px gutter already sits in the
+     section padding) so nothing drifts left or stretches past the design.
+     Nothing changes at 1920px and below. */
+  .proj{max-width:1920px;margin-left:auto;margin-right:auto}
+  .foot__top,.foot__bar,.skills__grid{max-width:1820px;margin-left:auto;margin-right:auto}
 </style>
   <script src="https://t.contentsquare.net/uxa/bddfae6c70d77.js" defer></script>
 </head>

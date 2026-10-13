@@ -1211,6 +1211,17 @@
      section padding) so nothing drifts left or stretches past the design.
      Nothing changes at 1920px and below. */
   .foot__top,.foot__bar,.skills__grid,.samen__inner{max-width:1820px;margin-left:auto;margin-right:auto}
+
+  /* ---- one side gutter + one content width for every homepage section ----
+     hero, cases, line animation, skills and footer all sit on the same
+     left/right edges now (they used to be 1400 / 1486 / full-width-50px).
+     Large screens only — below 1200px the existing gutters already match. */
+  @media (min-width:1200px){
+    :root{--gut:clamp(1.25rem,4vw,3.5rem);--site-w:1486px}
+    .hero2__top,.hero2__badge,.cases__head,.cases__grid,
+    .samen__inner,.skills__grid,.foot__top,.foot__bar{max-width:var(--site-w);margin-left:auto;margin-right:auto}
+    .samen,.skills,.foot{padding-left:var(--gut);padding-right:var(--gut)}
+  }
   .hero2__reel{width:min(100vw,1920px);margin-left:calc(50% - min(50vw,960px))}
 
   /* Safari: aspect-ratio on a stretched grid item can resolve to 0 height

@@ -998,6 +998,17 @@
      Nothing changes at 1920px and below. */
   .proj{max-width:1920px;margin-left:auto;margin-right:auto}
   .foot__top,.foot__bar,.skills__grid{max-width:1820px;margin-left:auto;margin-right:auto}
+
+  /* ---- footer is the same on every page ----
+     Same container + side gutter as the homepage (large screens only), so
+     the footer (and the skills panel above it on About) line up the same
+     way everywhere. */
+  @media (min-width:1200px){
+    :root{--gut:clamp(1.25rem,4vw,3.5rem);--site-w:1486px}
+    .foot__top,.foot__bar,.skills__grid{max-width:var(--site-w);margin-left:auto;margin-right:auto}
+    .skills,.foot{padding-left:var(--gut);padding-right:var(--gut)}
+  }
+  .foot__image{border-radius:10px}
 </style>
   <script src="https://t.contentsquare.net/uxa/bddfae6c70d77.js" defer></script>
 </head>
@@ -1138,14 +1149,14 @@
   <footer class="foot" id="contact">
     <div class="foot__top">
       <div class="foot__lead">
-        <h2 class="foot__title">Почнімо розмову</h2>
-        <p class="foot__body">Відкритий до продуктового дизайну &mdash; повні проєкти або сфокусований спринт. Розкажи, що будуєш, у <a href="https://t.me/m1lan081" target="_blank" rel="noopener">Telegram</a><span class="foot__avatars" aria-hidden="true"><span class="foot__av foot__av--photo"><img src="tg-1.png" alt="" /></span><span class="foot__av foot__av--logo"><img src="tg-2.svg" alt="" /></span></span> або на пошту &mdash; і я повернусь з тим, як би я це зробив.</p>
+        <h2 class="foot__title">Давайте поговоримо</h2>
+        <p class="foot__body">Шукаю позицію Product Designer у продуктовій команді. Розкажіть про команду або продукт у&nbsp;<span style="white-space:nowrap"><a href="https://t.me/m1lan081" target="_blank" rel="noopener">Telegram</a><span class="foot__avatars" aria-hidden="true"><span class="foot__av foot__av--photo"><img src="tg-1.png" alt="" /></span><span class="foot__av foot__av--logo"><img src="tg-2.svg" alt="" /></span></span></span> чи&nbsp;на <a href="mailto:cherniiyurii2024@gmail.com">email</a>, і&nbsp;я повернуся з відповіддю.</p>
       </div>
 
       <div class="foot__side">
         <div class="foot__label">Контакти</div>
         <div class="foot__contacts">
-          <span>Зі Львова до Варшави</span>
+          <span>Базуюсь у Варшаві</span>
           <a href="mailto:cherniiyurii2024@gmail.com">cherniiyurii2024@gmail.com</a>
         </div>
         <div class="foot__label">Медіа</div>

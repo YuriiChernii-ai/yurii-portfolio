@@ -995,6 +995,21 @@
      Nothing changes at 1920px and below. */
   .proj{max-width:1920px;margin-left:auto;margin-right:auto}
   .foot__top,.foot__bar,.skills__grid{max-width:1820px;margin-left:auto;margin-right:auto}
+
+  /* ---- footer is the same on every page ----
+     Same container + side gutter as the homepage (large screens only), so
+     the footer (and the skills panel above it on About) line up the same
+     way everywhere. */
+  @media (min-width:1200px){
+    :root{--gut:clamp(1.25rem,4vw,3.5rem);--site-w:1486px}
+    .foot__top,.foot__bar,.skills__grid{max-width:var(--site-w);margin-left:auto;margin-right:auto}
+    .skills,.foot{padding-left:var(--gut);padding-right:var(--gut)}
+  }
+  .foot__image{border-radius:10px}
+
+  /* ---- Monte case: all copy is grotesque (Inter), no serif ----
+     Only the footer title keeps its serif. */
+  .caseHero__title,.proj__title,.block__h,.tp-card__title{font-family:var(--sans)}
 </style>
   <script src="https://t.contentsquare.net/uxa/bddfae6c70d77.js" defer></script>
 </head>
@@ -1181,12 +1196,6 @@
                 <p>Gotowe ekrany: konfigurator, katalog i strona produktu, koszyk i checkout, wersja mobilna.</p>
             </div></div>
           </li>
-          <li data-target="c9">
-            <a class="toc__t" href="#c9">Wnioski<svg class="toc__dot" viewBox="0 0 8 8" aria-hidden="true"><circle class="toc__dot-off" cx="4" cy="4" r="4"/><circle class="toc__dot-on" cx="4" cy="4" r="4"/></svg></a>
-            <div class="toc__b"><div>
-                <p>Co obalił research, z czym sam bym polemizował, i ile kosztowała decyzja o wireframes.</p>
-            </div></div>
-          </li>
         </ol>
       </div>
 
@@ -1353,8 +1362,6 @@
           </a>
         </div>
         <h2 class="block__h">Research i problemy</h2>
-        <h3 class="block__sub">Cel biznesowy</h3>
-        <p class="block__text">Uruchomić własny kanał sprzedaży marki, który dotąd docierał do kupujących tylko przez resellerów i marketplace&rsquo;y &mdash; taki, w którym dopasowanie i wygląd są ustalone przed płatnością, więc zamówienie jest trafne za pierwszym razem.</p>
         <h3 class="block__sub">Problemy biznesowe</h3>
         <ul class="block__list">
           <li>Sprzedaż idzie przez pośredników: brak bezpośredniego kontaktu z kupującym i danych o tym, jak faktycznie wybiera.</li>
@@ -1472,26 +1479,20 @@
         <div class="shot"><img src="webcollage6.jpg" alt="" loading="lazy" /></div>
       </section>
 
-      <section class="block" id="c9">
-        <h2 class="block__h">Co z tego wyniosłem</h2>
-        <p class="block__text">Po dwóch wywiadach brief, który dostałem, przestał się trzymać kupy. Zakładał jednego kupującego, któremu trzeba pomóc wybrać, i taki kupujący faktycznie istnieje &mdash; ale doświadczonemu, który przychodzi z numerem artykułu, dokładnie ta sama podpowiedź tylko przeszkadza. Podział punktu wejścia okazał się nie sprytnym pomysłem, a jedynym uczciwym odczytaniem researchu, i to na tej decyzji opiera się teraz cały produkt.</p>
-        <p class="block__text">Z czym sam bym polemizował, to konfigurator. To najdroższa rzecz tutaj &mdash; zarówno w budowie, jak i w utrzymaniu &mdash; każdy SKU potrzebuje modelu, każdy materiał potrzebuje tekstury &mdash; i zarabia na siebie tylko wtedy, gdy kupujący faktycznie coś konfigurują, zamiast brać domyślny wariant. To pierwsza liczba, na którą bym patrzył, i jeśli zostanie niska, uczciwym ruchem będzie ograniczyć konfigurator do kilku kategorii i przenieść wysiłek na fotografię dopasowania.</p>
-        <p class="block__text">Pominięcie wireframes zadziałało, ale kosztem, który nie doceniłem: gdy ekran wygląda na skończony, feedback dotyczy koloru przycisku, a nie kolejności kroków. Następnym razem zachowałbym tę samą szybkość hi-fi, ale głośno mówiłbym na starcie każdego review, która warstwa jest teraz do dyskusji.</p>
-      </section>
     </div>
   </div>
 
   <footer class="foot" id="contact">
     <div class="foot__top">
       <div class="foot__lead">
-        <h2 class="foot__title">Zacznijmy rozmowę</h2>
-        <p class="foot__body">Otwarty na projekty product design &mdash; pełne wdrożenia lub skupiony sprint. Napisz, co budujesz, na <a href="https://t.me/m1lan081" target="_blank" rel="noopener">Telegram</a><span class="foot__avatars" aria-hidden="true"><span class="foot__av foot__av--photo"><img src="tg-1.png" alt="" /></span><span class="foot__av foot__av--logo"><img src="tg-2.svg" alt="" /></span></span> albo mailem, a ja wrócę z tym, jak bym to ugryzł.</p>
+        <h2 class="foot__title">Porozmawiajmy</h2>
+        <p class="foot__body">Szukam pozycji Product Designer w zespole produktowym. Opowiedz o zespole lub produkcie na&nbsp;<span style="white-space:nowrap"><a href="https://t.me/m1lan081" target="_blank" rel="noopener">Telegram</a><span class="foot__avatars" aria-hidden="true"><span class="foot__av foot__av--photo"><img src="tg-1.png" alt="" /></span><span class="foot__av foot__av--logo"><img src="tg-2.svg" alt="" /></span></span></span> albo&nbsp;na <a href="mailto:cherniiyurii2024@gmail.com">email</a>, a&nbsp;ja wrócę z&nbsp;odpowiedzią.</p>
       </div>
 
       <div class="foot__side">
         <div class="foot__label">Kontakt</div>
         <div class="foot__contacts">
-          <span>Ze Lwowa do Warszawy</span>
+          <span>Mieszkam w Warszawie</span>
           <a href="mailto:cherniiyurii2024@gmail.com">cherniiyurii2024@gmail.com</a>
         </div>
         <div class="foot__label">Media</div>

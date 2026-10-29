@@ -995,6 +995,21 @@
      Nothing changes at 1920px and below. */
   .proj{max-width:1920px;margin-left:auto;margin-right:auto}
   .foot__top,.foot__bar,.skills__grid{max-width:1820px;margin-left:auto;margin-right:auto}
+
+  /* ---- footer is the same on every page ----
+     Same container + side gutter as the homepage (large screens only), so
+     the footer (and the skills panel above it on About) line up the same
+     way everywhere. */
+  @media (min-width:1200px){
+    :root{--gut:clamp(1.25rem,4vw,3.5rem);--site-w:1486px}
+    .foot__top,.foot__bar,.skills__grid{max-width:var(--site-w);margin-left:auto;margin-right:auto}
+    .skills,.foot{padding-left:var(--gut);padding-right:var(--gut)}
+  }
+  .foot__image{border-radius:10px}
+
+  /* ---- Monte case: all copy is grotesque (Inter), no serif ----
+     Only the footer title keeps its serif. */
+  .caseHero__title,.proj__title,.block__h,.tp-card__title{font-family:var(--sans)}
 </style>
   <script src="https://t.contentsquare.net/uxa/bddfae6c70d77.js" defer></script>
 </head>
@@ -1180,12 +1195,6 @@
                 <p>Готові екрани: конфігуратор, каталог і сторінка товару, кошик і чекаут, мобайл.</p>
             </div></div>
           </li>
-          <li data-target="c9">
-            <a class="toc__t" href="#c9">Висновки<svg class="toc__dot" viewBox="0 0 8 8" aria-hidden="true"><circle class="toc__dot-off" cx="4" cy="4" r="4"/><circle class="toc__dot-on" cx="4" cy="4" r="4"/></svg></a>
-            <div class="toc__b"><div>
-                <p>Що перевернув ресерч, з чим я б посперечався сам, і скільки коштувало рішення про вайрфрейми.</p>
-            </div></div>
-          </li>
         </ol>
       </div>
 
@@ -1352,8 +1361,6 @@
           </a>
         </div>
         <h2 class="block__h">Ресерч і проблеми</h2>
-        <h3 class="block__sub">Бізнес-ціль</h3>
-        <p class="block__text">Запустити власний канал продажів бренду, який досі охоплював покупців тільки через реселерів і маркетплейси &mdash; такий, де і fitment, і вигляд вирішені до оплати, тож замовлення правильне з першого разу.</p>
         <h3 class="block__sub">Бізнес-проблеми</h3>
         <ul class="block__list">
           <li>Продажі йдуть через третіх осіб: немає прямого контакту з покупцем і даних про те, як він реально обирає.</li>
@@ -1471,26 +1478,20 @@
         <div class="shot"><img src="webcollage6.jpg" alt="" loading="lazy" /></div>
       </section>
 
-      <section class="block" id="c9">
-        <h2 class="block__h">Що я виніс</h2>
-        <p class="block__text">Після двох інтервʼю бриф, який мені дали, перестав триматись купи. Він припускав одного покупця, якому треба допомогти обрати, і такий покупець дійсно існує &mdash; але прошареному, який приходить з артикулом, та сама підказка тільки заважає. Поділ точки входу виявився не красивою ідеєю, а єдиним чесним прочитанням ресерчу, і саме на цьому рішенні тримається весь продукт.</p>
-        <p class="block__text">Те, з чим я б посперечався сам із собою &mdash; конфігуратор. Це найдорожча річ тут і в побудові, і в наповненні &mdash; кожен SKU потребує моделі, кожен матеріал &mdash; текстури &mdash; і виправдовує себе тільки якщо покупці реально щось збирають, а не беруть дефолт. Це перше число, яке б я дивився, і якщо воно лишиться низьким, чесний хід &mdash; урізати конфігуратор до кількох категорій і вкласти зусилля в fitment-фотографію натомість.</p>
-        <p class="block__text">Відмова від вайрфреймів спрацювала, але з ціною, яку я недооцінив: коли екран виглядає готовим, фідбек приходить про колір кнопки, а не про порядок кроків. Наступного разу я лишив би ту саму швидкість hi-fi, але вголос казав би на старті кожного рев'ю, який саме шар зараз обговорюємо.</p>
-      </section>
     </div>
   </div>
 
   <footer class="foot" id="contact">
     <div class="foot__top">
       <div class="foot__lead">
-        <h2 class="foot__title">Почнімо розмову</h2>
-        <p class="foot__body">Відкритий до продуктового дизайну &mdash; повні проєкти або сфокусований спринт. Розкажи, що будуєш, у <a href="https://t.me/m1lan081" target="_blank" rel="noopener">Telegram</a><span class="foot__avatars" aria-hidden="true"><span class="foot__av foot__av--photo"><img src="tg-1.png" alt="" /></span><span class="foot__av foot__av--logo"><img src="tg-2.svg" alt="" /></span></span> або на пошту &mdash; і я повернусь з тим, як би я це зробив.</p>
+        <h2 class="foot__title">Давайте поговоримо</h2>
+        <p class="foot__body">Шукаю позицію Product Designer у продуктовій команді. Розкажіть про команду або продукт у&nbsp;<span style="white-space:nowrap"><a href="https://t.me/m1lan081" target="_blank" rel="noopener">Telegram</a><span class="foot__avatars" aria-hidden="true"><span class="foot__av foot__av--photo"><img src="tg-1.png" alt="" /></span><span class="foot__av foot__av--logo"><img src="tg-2.svg" alt="" /></span></span></span> чи&nbsp;на <a href="mailto:cherniiyurii2024@gmail.com">email</a>, і&nbsp;я повернуся з відповіддю.</p>
       </div>
 
       <div class="foot__side">
         <div class="foot__label">Контакти</div>
         <div class="foot__contacts">
-          <span>Зі Львова до Варшави</span>
+          <span>Базуюсь у Варшаві</span>
           <a href="mailto:cherniiyurii2024@gmail.com">cherniiyurii2024@gmail.com</a>
         </div>
         <div class="foot__label">Медіа</div>
